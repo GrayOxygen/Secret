@@ -1,3 +1,52 @@
-baseurl = "http://replace-this-with-your-hugo-site.com/"
-languageCode = "en-us"
-title = "My New Hugo Site"
+baseurl = "http://listenzhangbin.com/"
+title = "Listen's Blog"
+author = "Listen"
+# Shown in the side menu
+copyright = "&copy; 2016. All rights reserved."
+canonifyurls = true
+paginate = 10
+theme = "blackburn"
+
+[indexes]
+  tag = "tags"
+  topic = "topics"
+
+[params]
+  # Shown in the home page
+  subtitle = "Move on"
+  brand = "Menu"
+  googleAnalytics = "UA-74906880-1"
+  disqus = "listenzhang"
+  # CSS name for highlight.js
+  highlightjs = "monokai"
+  dateFormat = "02 Jan 2006, 15:04"
+
+[menu]
+  # Shown in the side menu.
+  [[menu.main]]
+    name = "Home"
+    pre = "<i class='fa fa-home fa-fw'></i>"
+    weight = 0
+    identifier = "home"
+    url = "/"
+  [[menu.main]]
+    name = "Posts"
+    pre = "<i class='fa fa-list fa-fw'></i>"
+    weight = 1
+    identifier = "post"
+    url = "/post/"
+
+[social]
+  # Link your social networking accouns to the side menu
+  # by entering your username or ID.
+
+  # SNS microblogging
+  weibo = "p/1005052836454264/home"
+
+  # SNS career oriented
+  linkedin = "bin-zhang-347596b9"
+
+  # Techie
+  github = "HelloListen"
+
+  email = "listenzhangbin@gmail.com"
