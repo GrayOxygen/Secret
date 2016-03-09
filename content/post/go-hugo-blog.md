@@ -225,7 +225,7 @@ hugo server --baseURL=http://yoursite.org/ \
               --appendPort=false \
               --bind=0.0.0.0
 ```
-由于Hugo是在开发的时候是支持热更新的,对开发比较有用,在部署的时候可以使用\-\-disableLiveReload=true禁用。
+由于Hugo是在开发的时候是支持热更新的,对开发比较有用,在部署的时候使用\-\-disableLiveReload=true参数禁用。  
 可以使用supervisor等进程管理工具让Hugo进程跑在后台,只要在supervisor配置文件中先进入项目的根目录,然后执行上面的命令即可。
 
 ## 最后
