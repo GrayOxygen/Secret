@@ -39,6 +39,7 @@ go get -v -u github.com/spf13/hugo
 brew update && brew install hugo
 ```
 使用brew安装完后不需要手动添加环境变量,直接在命令行中使用hugo命令即可使用。
+
 ## 生成博客
 
 安装完成后,就可以来生成博客了。
@@ -88,6 +89,7 @@ hugo undraft content/about.md
 hugo new post/first.md
 ```
 可以看到在content/post/下产生了一个first.md文件。
+
 ## 安装主题
 
 接下来安装主题,我们直接使用Hugo推荐的一些主题。比如说我使用的是blackburn这个主题:
@@ -99,6 +101,7 @@ git clone https://github.com/yoshiharuyamashita/blackburn.git themes/blackburn
 theme = "blackburn"
 ```
 这样主题就安装好了。
+
 ## 启动Hugo
 
 终于到了看实际效果的时候了,在博客的项目根目录下运行:
@@ -109,6 +112,7 @@ hugo server --buildDrafts --theme=blackburn
 draft=true状态的。
 
 打开浏览器,在地址栏中输入:http://localhost:1313, 就可以看到我们的博客了。
+
 ## 更改配置
 
 一般来说使用默认的配置就可以了,但是要注意配置baseurl参数:
@@ -190,6 +194,7 @@ theme = "blackburn"
   bitbucket = "*"
   stackoverflow = "*"
 ```
+
 ## 版本控制
 到项目的根目录下
 ```
@@ -201,6 +206,7 @@ git commit -am "initial commit"
 git remote add origin git@github.com:YourUserName/YourProjectName.git
 git push -u origin master
 ```
+
 ## 部署
 最后一步就是部署啦,只有部署到服务器上之后别人才能看到我们的博客,Hugo博客有两种部署方式:
 
@@ -221,9 +227,10 @@ hugo server --baseURL=http://yoursite.org/ \
 ```
 由于Hugo是在开发的时候是支持热更新的,对开发比较有用,在部署的时候可以使用\-\-disableLiveReload=true禁用。
 可以使用supervisor等进程管理工具让Hugo进程跑在后台,只要在supervisor配置文件中先进入项目的根目录,然后执行上面的命令即可。
+
 ## 最后
 使用主题的时候有一点要注意,由于主题一般都是使用国外的CDN,所以国内使用的时候加载会特别慢,有些使用的Google的服务还被墙了。所以建议把themes
-中layouts里的CDN改成国内的CDN,可以显著的加快加载速度。这里推荐一个免费的公共CDN:http://www.bootcdn.cn/ ,上面收录了上千个开源项目,非常好用。
-嗯,这样就算初步搭建好了一个个人博客。其实还有许多的细节没有提到,有什么问题欢迎给我留言,
-更详细的内容可以参考Hugo的官方文档:https://gohugo.io/ 。
+中layouts里的CDN改成国内的CDN,可以显著的加快加载速度。这里推荐一个免费的公共CDN: http://www.bootcdn.cn/ ,上面收录了上千个开源项目,非常好用。  
 
+嗯,这样就算初步搭建好了一个个人博客。其实还有许多的细节没有提到,有什么问题欢迎给我留言,
+更详细的内容可以参考Hugo的官方文档: https://gohugo.io/ 。
