@@ -216,6 +216,19 @@ hugo
 ```
 Hugo会把我们的项目打包在一个public文件夹中,因为是静态的博客,所以只需要把public目录复制到服务器上,在Nginx的配置中配置
 指向public目录即可。
+```
+server {
+    listen 80;
+    server_name 你的域名;
+    index index.html;
+    root /home/www/public; #这里配置指向根目录
+}
+```
+配置完成后使用
+```
+nginx -s reload
+```
+重新载入配置文件,完成部署。
 
 2. 使用Hugo部署。由于Go语言本身也可以作为Server,如果博客的访问量并不是特别大的话也可以直接使用Hugo部署。
 部署的方式为:从Github上clone项目到服务器上,然后在项目根目录下执行:
