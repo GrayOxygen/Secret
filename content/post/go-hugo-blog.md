@@ -14,7 +14,7 @@ Hugo是一个用Go语言编写的静态博客生成工具,使用Hugo可以非常
 
 Hugo的安装有几种方法:
 
-1. 直接下载编译后的二进制分发包。Hugo在Github上的项目地址是:https://github.com/spf13/hugo ,可以去下载编译后的二进制分发包。
+1. 直接下载编译后的二进制分发包。Hugo在Github上的项目地址是 https://github.com/spf13/hugo ,可以去下载编译后的二进制分发包。
 截至目前,最新的版本是0.15,根据自己的操作系统环境下载编译完后的压缩包。<!--more-->下载完成后可以解压在任意的位置,比如说解压在~/Hugo下:
 ```
 tar xvf hugo_0.15_linux_amd64.tar.gz -C ~/Hugo
@@ -108,7 +108,7 @@ theme = "blackburn"
 ```
 hugo server --buildDrafts --theme=blackburn
 ```
-如果在配置文件中已经配置了theme的话就不需要再指定\-\-theme参数了,\-\-buildDrafts参数的意思是渲染所有的post包括
+如果在配置文件中已经配置了theme的话就不需要再指定``--theme``参数了,``--buildDrafts``参数的意思是渲染所有的post包括
 draft=true状态的。
 
 打开浏览器,在地址栏中输入:http://localhost:1313, 就可以看到我们的博客了。
@@ -238,12 +238,12 @@ hugo server --baseURL=http://yoursite.org/ \
               --appendPort=false \
               --bind=0.0.0.0
 ```
-由于Hugo是在开发的时候是支持热更新的,对开发比较有用,在部署的时候使用\-\-disableLiveReload=true参数禁用。  
+由于Hugo在开发的时候是支持热更新的,对开发比较有用,在部署的时候使用如果不需要的话,可以使用``--disableLiveReload=true``参数禁用。  
 可以使用supervisor等进程管理工具让Hugo进程跑在后台,只要在supervisor配置文件中先进入项目的根目录,然后执行上面的命令即可。
 
 ## 最后
 使用主题的时候有一点要注意,由于主题一般都是使用国外的CDN,所以国内使用的时候加载会特别慢,有些使用的Google的服务还被墙了。所以建议把themes
-中layouts里的CDN改成国内的CDN,可以显著的加快加载速度。这里推荐一个免费的公共CDN: http://www.bootcdn.cn/ ,上面收录了上千个开源项目,非常好用。  
+中layouts里的CDN改成国内的CDN,可以显著的加快加载速度。这里推荐一个免费的[公共CDN](http://www.bootcdn.cn/),上面收录了上千个开源项目,非常好用。  
 
 嗯,这样就算初步搭建好了一个个人博客。其实还有许多的细节没有提到,有什么问题欢迎给我留言,
-更详细的内容可以参考Hugo的官方文档: https://gohugo.io/ 。
+更详细的内容可以参考[Hugo的官方文档](https://gohugo.io/)。
