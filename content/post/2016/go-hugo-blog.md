@@ -2,10 +2,11 @@
 date = "2016-03-08T17:29:46+08:00"
 draft = false
 title = "使用Hugo搭建个人博客"
-tags = ["Go","Hugo","Blog"]
+tags = ["Hugo","Blog"]
 description = "使用Hugo搭建个人博客"
 keywords = ["Go","Hugo","Blog"]
 author = "listen"
+topics = ["Go"]
 +++
 
 Hugo是一个用Go语言编写的静态博客生成工具,使用Hugo可以非常方便的生成个人的静态博客站点。
