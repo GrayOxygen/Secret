@@ -31,6 +31,18 @@ public class Foo{
     <constructor-arg ref="barClass"/>
 </bean>
 ```
+也可以使用注解的形式
+```
+@Component
+public class Foo{
+    private Bar bar;
+    
+    @Autowired
+    public Foo(Bar bar){
+        this.bar = bar;
+    }
+}
+```
 这样Spring就知道Foo类依赖于Bar类,因此在实例化Foo类的时候Spring会把Bar类注入到Foo类中。
 ``<constructor-arg>``元素的``ref``属性表示依赖的是一个引用类型,如果依赖的是一个简单类型的值,则使用``value``,
 并且如果构造方法有多个参数,那么可以使用``type``或者``index``属性加以区分。
@@ -62,6 +74,24 @@ public class SetterInjection{
     <property name="injection" ref="foo"/>
 </bean>
 ```
+使用注解的形式
+```
+@Component("setterInjection")
+public class SetterInjection{
+    private Injection injection;
+    
+    public SetterInjection(){}
+    
+    @Autowired
+    public void setInjection(Injection injection){
+        this.injection = injection;
+    }
+    
+    public Injection getInjection(){
+        return injection;
+    }
+}
+```
 可以看到,setter方法注入的Bean配置形式与构造方法注入是比较类似的,如果通过``setter``方法注入的是简单类型的值,
 那么使用``value``属性。这里需要注意的是被``setter``方法注入的类必须有一个公共的默认无参构造器。
 
@@ -86,6 +116,25 @@ public class MockBean{
     <constructor-arg value="hello">
     <property name="dependency2" value="good"/>
 </bean>
+```
+使用注解的形式
+```
+@Component
+public class MockBean{
+    private String dependency1;
+    private String dependency2;
+    
+    @Autowired
+    public MockBean(String dependency){
+        this.dependency1 = dependency;
+    }
+    
+    @Autowired
+    public void setDependency2(String dependency2){
+        this.dependency2 = dependency2;
+    }
+    ...
+}
 ```
 
 ## 方法注入
