@@ -233,7 +233,7 @@ public class SomeService implements FooService{
 }
 ```
 
-+ 使用**TransactionProxyFactoryBean**
+### 使用**TransactionProxyFactoryBean**
 
 在XML配置文件中进行相关配置
 ```
@@ -275,7 +275,7 @@ public class SomeService implements FooService{
     </bean>
 ```
 
-+ 使用**tx**命令空间
+### 使用**tx**命令空间
 
 使用Spring中AOP的配置方式来声明事务管理。
 ```
@@ -304,7 +304,7 @@ public class SomeService implements FooService{
 </bean>
 ```
 
-+ 使用注解
+### 使用注解
 
 ```
 @Transactional
