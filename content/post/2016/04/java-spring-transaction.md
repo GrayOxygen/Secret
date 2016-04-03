@@ -59,5 +59,303 @@ PROPAGATION_REQUIRED通常作为默认的事务传播行为。
 
 ## Spring中的编程式事务管理
 
+可以直接使用``PlatformTransactionManager``或使用``TransactionTemplate``进行编程式事务管理。一般来说,推荐使用``TransactionTemplate``。
+与使用Spring的Jdbc类似,``TransactionTemplate``也使用了模版设计模式的封装,我们在使用的时候,需要实现``TransactionCallback``接口或
+``TransactionCallbackWithoutResult``抽象类中的一个,两者的区别就是是否需要返回执行的结果。
+```
+public void service(){
+    TransactionTemplate transactionTemplate = new TransactionTemplate();
+    
+    Object result = transactionTemplate.execute(new TransactionCallback<Object>(){
+        @Override
+        public void doInTransaction(TransactionStatus transactionStatus){
+            Object result = null;
+            //...
+            return result;
+        }
+    });
+}
+```
+```
+public void service(){
+    TransactionTemplate transactionTemplate = new TransactionTemplate();
+    
+    transactionTemplate.execute(new TransactionCallbackWithoutResult(){
+        @Override
+        protected void doInTransactionWithoutResult(TransactionStatus transactionStatus){
+            Object result = null;
+            //...
+        }
+    });
+}
+```
+``TransactionTemplate``会捕捉``TransactionCallback``或者``TransactionCallbackWithoutResult``事务操作中抛出的
+**unchecked exception**并回滚事务,然后将**unchecked exception**抛给上层处理。如果事务处理期间没有问题,
+那么``TransactionTemplate``最终会为我们提交事务。那么如果要手动回滚事务应该怎么做呢,有两种方式:
 
++ 抛出``unchecked exception``。
+```
+public void service(){
+        TransactionTemplate transactionTemplate = new TransactionTemplate();
+        
+        transactionTemplate.execute(new TransactionCallbackWithoutResult(){
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus){
+                try{
+                    //...
+                }catch(CheckedException e){
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+```
 
++ 使用Callback接口公开的``TransactionStatus``将事务标记为``rollBackOnly``。
+```
+public void service(){
+        TransactionTemplate transactionTemplate = new TransactionTemplate();
+        
+        transactionTemplate.execute(new TransactionCallbackWithoutResult(){
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus){
+                boolean needRollback = false;
+                //...
+                if (needRollback){
+                    transactionStatus.setRollbackOnly();
+                }
+            }
+        });
+}
+```
+
+两种方式可以同时使用,达到既回滚事务,又不以``unchecked exception``的形式向上层传播。
+```
+public void service(){
+    TransactionTemplate transactionTemplate = new TransactionTemplate();
+    
+    transactionTemplate.execute(new TransactionCallbackWithoutResult(){
+        @Override
+        protected void doInTransactionWithoutResult(TransactionStatus transactionStatus){
+            try{
+                //...
+            }catch(CheckedException e){
+                logger.warn("Transaction is rolled back!",e);
+                transactionStatus.setRollbackOnly();
+            }
+        }
+    })
+}
+```
+
+还可以使用``TransactionStatus``的SavePoint机制来嵌套事务。
+```
+public void service(){
+    TransactionTemplate transactionTemplate = new TransactionTemplate();
+    
+    transactionTemplate.execute(new TransactionCallbackWithoutResult(){
+        @Override
+        protected void doInTransactionWithoutResult(TransactionStatus transactionStatus){
+            BigDecimal transferAmount = new BigDecimal("20000");
+            try{
+                withdraw("WITHDRAW_ACCOUNT_ID",transferAmount);
+                
+                Object savePointBeforeDeposit = transactionStatus.createSavePoint();
+                try{
+                    deposit("MAIN_ACCOUNT_ID",transferAmount);
+                }catch(Exception e){
+                    transactionStatus.rollbackToSavePoint(savePointBeforeDeposit);
+                    deposit("SECONDARY_ACCOUNT_ID",transferAmount);
+                }finally{
+                    transactionStatus.releaseSavepoint(savePointBeforeDeposit);
+                }
+            }catch(Exception e){
+                logger.warn("failed to complete transfer operation!",e)
+                transactionStatus.setRollbackOnly();
+            }
+        }
+    })
+}
+
+```
+
+## Spring中的声明式事务管理
+
+首先,假设我们有一个服务接口
+```
+public interface FooService{
+    service getService();
+    service getServiceByDateTime(DateTime dateTime);
+    void saveService(Service service);
+    void updateService(Service service);
+    void deleteService(Service service);
+}
+```
+以及一个服务接口的实现类
+```
+public class SomeService implements FooService{
+    private JdbcTemplate jdbcTemplate;
+    
+    @Override
+    public Service getService(){
+        return (Service)getJdbcTemplate().queryForObject("",new RowMapper(){
+            @Override
+            public Object mapRow(ResultSet rs, int row)throws SQLException{
+                Service service = new Service;
+                //...
+                return service;
+            }
+        });
+    }
+    
+    @Override
+    public service getServiceByDateTime(DateTime dateTime){
+        throw new NotImplementedException();
+    }
+    
+    @Override
+    public void saveService(Service service){
+        throw new NotImplementedException();
+    }
+    
+    @Override
+    public void deleteService(Service service){
+        throw new NotImplementedException();
+    }
+    
+    public JdbcTemplate getJdbcTemplate(){
+        return jdbcTemplate;
+    }
+    
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
+}
+```
+
++ 使用**TransactionProxyFactoryBean**
+
+在XML配置文件中进行相关配置
+```
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/test"/>
+        <property name="username" value="root"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+    <bean id="serviceTarget" class="...SomeService">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+    
+    <bean id="someService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="target" ref="serviceTarget"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="getService*">PROPAGATION_SUPPORTS,readOnly,timeout_10</prop>
+                <prop key="saveService">PROPAGATION_REQUIRED</prop>
+                <prop key="updateService">PROPAGATION_REQUIRED</prop>
+                <prop key="deleteService">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+        
+    <!--最后将代理对象注入到client中使用-->
+    <bean id="client" class="...SomeServiceClient">
+        <property name="someService" ref="someService"/>
+    </bean>
+```
+
++ 使用**tx**命令空间
+
+使用Spring中AOP的配置方式来声明事务管理。
+```
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+        <tx:method name="getService" propagation="SUPPORTS" read-only="true" timeout="20"/>
+        <tx:method name="saveService"/>
+        <tx:method name="updateService"/>
+        <tx:method name="deleteService"/>
+    </tx:attributes>
+</tx:advice>
+
+<aop:config>
+    <aop:pointcut id="txServices" expression="execution(* ...SomeService(..))"/>
+    <aop:advisor pointcut-ref="txServices" advice-ref="exAdvice"/>
+</aop:config>
+
+<!--省略了相同的dataSource、transactionManager、jdbcTemplate的配置-->
+
+<bean id="someService" class="...SomeService">
+    <property name="jdbcTemplate" ref="jdbcTemplate"/>
+</bean>
+
+<bean id="client" class="...SomeServiceClient">
+    <property name="someService" ref="someService"/>
+</bean>
+```
+
++ 使用注解
+
+```
+@Transactional
+@Component
+public class SomeService implements FooService{
+    private JdbcTemplate jdbcTemplate;
+    
+    @Override
+    @Transactional(propagation=Propagation.SUPPORTS,readOnly=true,timeout=20)
+    public Service getService(){
+        return (Service)getJdbcTemplate().queryForObject("",new RowMapper(){
+            @Override
+            public Object mapRow(ResultSet rs, int row)throws SQLException{
+                Service service = new Service;
+                //...
+                return service;
+            }
+        });
+    }
+    
+    @Override
+    @Transactinoal(propagation=Propagation.SUPPORTS,readOnly=true,timeout=20)
+    public service getServiceByDateTime(DateTime dateTime){
+        throw new NotImplementedException();
+    }
+    
+    @Override
+    public void saveService(Service service){
+        throw new NotImplementedException();
+    }
+    
+    @Override
+    public void deleteService(Service service){
+        throw new NotImplementedException();
+    }
+    
+    public JdbcTemplate getJdbcTemplate(){
+        return jdbcTemplate;
+    }
+    
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
+}
+```
+需要在XML中加上以下配置通过反射来获取注解的信息
+```
+<tx:annotation-driven transaction-manager="transactionManager"/>
+
+<!--注入声明了事务管理的someService类-->
+<bean id="client" class="...SomeServiceClient">
+    <property name="someService" ref="someService"/>
+</bean>
+```
