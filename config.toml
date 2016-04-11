@@ -18,7 +18,7 @@ theme = "blackburn"
   googleAnalytics = "UA-74906880-1"
   disqus = "listenzhang"
   # CSS name for highlight.js
-  highlightjs = "mono-blue"
+  highlightjs = "atelier-heath-light"
   dateFormat = "02 Jan 2006, 15:04"
 
 [menu]
