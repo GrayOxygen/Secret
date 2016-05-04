@@ -34,7 +34,7 @@ If-Match:"3f05a51a1e5260f4179db8ca65307a6a"
 ```
 
 If-Match字段的值是一个ETag值,只有当这个ETag值与所请求的服务器上资源的ETag值相同时,
-服务器才会处理这个请求,并且这时服务器无法使用弱ETag值。如果两者不同,则返回状态码412 Precondition Failed的响应。
+服务器才会处理这个请求,并且这时服务器无法使用弱ETag值。如果两者不同,则返回状态码``412 Precondition Failed``的响应。
 
 ```
 If-None-Match:W/"3f05a51a1e5260f4179db8ca65307a6a"
@@ -52,7 +52,7 @@ If-Modified-Since:Wed, 18 Mar 2015 08:46:53 GMT
 ```
 
 表示在If-Modified-Since字段指定的日期时间之后,资源发生了更新,服务器会接收请求。
-如果在If-Modified-Since字段值的日期之后没有更新过资源,返回状态码304 Not Modified。
+如果在If-Modified-Since字段值的日期之后没有更新过资源,返回状态码``304 Not Modified``。
 If-Modified-Since用于确认代理或客户端拥有本地资源的有效性。可通过**Last-Modified**字段来获取资源的更新时间。
 
 ```
@@ -60,7 +60,16 @@ If-Unmodified-Since:Thu, 03 Jul 2012 08:46:53 GMT
 ```
 
 If-Unmodified-Since表示指定的资源只有在字段值内指定的日期之后,未发生更新的情况下,才能处理请求。
-如果在指定日期之后发生了更新,返回状态码412 Precondition Failed作为响应返回。
+如果在指定日期之后发生了更新,返回状态码``412 Precondition Failed``作为响应返回。
 
 ## If-Range
 
+```
+If-Range:"9a108ac6ff91842e143af3a243fb5ea3"
+Rage:bytes=5001-10000
+```
+
+If-Range字段的值也是一个ETag值,如果If-Range字段的值与请求的资源的ETag值相同,那么就作为范围请求处理,
+范围由Range头部字段指定,返回状态码``206 Partial Content``,反之,则返回全部资源,状态码为``200 OK``。
+
+好了,以上就是对HTTP Request Header中If-xxx形式的字段的简单介绍。
