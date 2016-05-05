@@ -71,7 +71,7 @@ SSL采用的是一种叫做**公开密钥加密**的方式,在了解公开密钥
 ![Root Certificate](http://7xsskq.com2.z0.glb.clouddn.com/blog/https-ssl-tls/root-certificate.png "Root Certificate")
 
 当然,如果使用OpenSSL开源程序,那么我们自己可以给自己颁发证书,这种由自认证机构颁发的证书称为自签名证书,
-但是自签名证书似乎并没有什么用途,浏览器无法识别自签名的证书,因为在访问使用自签名证书的站点时,会弹出安全警告。
+但是自签名证书似乎并没有什么用途,浏览器无法识别自签名的证书,因此在访问使用自签名证书的站点时,会弹出安全警告。
 
 ## HTTPS的通信过程
 
