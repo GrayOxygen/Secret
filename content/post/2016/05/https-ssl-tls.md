@@ -129,4 +129,4 @@ but they are significant enough that TLS 1.0 and SSL 3.0 do not interoperate (al
 
 + MSDN,[TLS Handshake Protocol](https://msdn.microsoft.com/en-us/library/windows/desktop/aa380513(v=vs.85).aspx "TLS Handshake Protocol")
 + 阮一峰,[SSL/TLS协议运行机制的概述](http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html "SSL/TLS协议运行机制的概述")
-+ 人民邮电出版社,《[图解HTTP](https://book.douban.com/subject/25863515/ "图解HTTP")》
++ 人民邮电出版社,[《图解HTTP》](https://book.douban.com/subject/25863515/ "图解HTTP")
