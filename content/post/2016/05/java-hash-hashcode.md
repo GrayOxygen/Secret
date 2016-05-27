@@ -29,9 +29,10 @@ Java中的``hashCode()``方法,是顶层对象``Object``中的方法,因此Java�
 因此数组多大就不重要了,任何键总能在数组中找到它的位置。
 
 数组并不直接保存值,因为不同的键可能产生相同的数组下标,数组保存的是值的list,因此,
-散列表的存储结构外层是一个数组,容量固定,数组的每一项都是保存着值的list,list的长度是可变的,
+散列表的存储结构外层是一个数组,容量固定,数组的每一项都是保存着``Entry``的list,list的长度是可变的,
 键使用``hashCode()``方法产生hash值后,利用hash值产生数组的下标,找到值在散列表中的**桶位(bucket)**,也就是在哪一个list中,
-如果该桶位只有一个对应的值,那么返回该值,如果桶位有多个值,那么再对该list中的值使用``equals()``方法进行线性的查询,最后找到该键的值并返回。
+如果该桶位只有一个的Object,则返回该Value,如果该桶位有多个值,那么再对该list中的``Entry``的键使用``equals()``方法进行线性的查询,
+最后找到该键的值并返回。
 
 最后对list进行线性查询的部分会比较慢,但是,如果散列函数好的话,数组的每个位置就只有较少的值,
 因此不是查询整个list,而是快速地跳到数组的某个位置,只对很少的元素进行比较,这就是``HashMap``会如此快的原因。
@@ -40,43 +41,54 @@ Java中的``hashCode()``方法,是顶层对象``Object``中的方法,因此Java�
 
 ```
 public class SimpleHashMap<K, V> extends AbstractMap<K, V> {
+    //内部数组的容量
     static final int SIZE = 997;
 
+    //buckets数组,内部是一个链表,链表的每一项是Map.Entry形式,保存着HashMap的值
     @SuppressWarnings("unchecked")
     LinkedList<MapEntry<K, V>>[] buckets = new LinkedList[SIZE];
 
     public V put(K key, V value) {
         V oldValue = null;
+        //使用hashCode()方法产生hash值,使用hash值与数组容量取余获得数组的下标
         int index = Math.abs(key.hashCode()) % SIZE;
+        //如果该桶位为null,则插入一个链表
         if (buckets[index] == null) {
             buckets[index] = new LinkedList<>();
         }
         LinkedList<MapEntry<K, V>> bucket = buckets[index];
-
+           
+        //获得bucket
         MapEntry<K, V> pair = new MapEntry<>(key, value);
         boolean found = false;
+        //对键使用equals()方法线性查询value
         ListIterator<MapEntry<K, V>> it = bucket.listIterator();
         while (it.hasNext()) {
             MapEntry<K, V> iPair = it.next();
             if (iPair.getKey().equals(key)) {
                 oldValue = iPair.getValue();
+                //找到了键以后更改键原来的value
                 it.set(pair);
                 found = true;
                 break;
             }
         }
+        //如果没找到键,增加一个Entry
         if (!found) {
             buckets[index].add(pair);
         }
         return oldValue;
     }
-
+    
+    //get()与put()的工作方式类似
     @Override
     public V get(Object key) {
+        //使用hashCode()方法产生hash值,使用hash值与数组容量取余获得数组的下标
         int index = Math.abs(key.hashCode()) % SIZE;
         if (buckets[index] == null) {
             return null;
         }
+        //使用equals()方法线性查找键
         for (MapEntry<K, V> iPair : buckets[index]) {
             if (iPair.getKey().equals(key)) {
                 return iPair.getValue();
@@ -110,4 +122,8 @@ public class SimpleHashMap<K, V> extends AbstractMap<K, V> {
 
 ```
 
-hashCode()good
+## 编写良好的hashCode()方法
+
+可以看到,如果hashCode()产生的hash值能够让HashMap中的值均匀分布在数组中,那么能显著地提高HashMap的运行效率。
+一个良好的hashCode()方法首先是要能快速地生成hash值,然后
+
