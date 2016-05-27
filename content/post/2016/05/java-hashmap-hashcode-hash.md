@@ -28,7 +28,7 @@ Java中的``hashCode()``方法,是顶层对象``Object``中的方法,因此Java�
 由于数组的容量(也就是表中的桶位数)是固定的,所以不同的键可以产生相同的下标,也就是说,可能会有冲突,
 因此数组多大就不重要了,任何键总能在数组中找到它的位置。
 
-数组并不直接保存值,因为不同的键可能产生相同的数组下标,数组保存的是值的LinkedList,因此,
+数组并不直接保存值,因为不同的键可能产生相同的数组下标,数组保存的是LinkedList,因此,
 散列表的存储结构外层是一个数组,容量固定,数组的每一项都是保存着``Entry Object``(同时保存key和value)的LinkedList。
 
 由于下标的冲突,不同的键可能会产生相同的``bucket location``,在使用``put(key,value)``时,
@@ -130,7 +130,7 @@ public class SimpleHashMap<K, V> extends AbstractMap<K, V> {
 
 ## 编写良好的hashCode()方法
 
-如果``hashCode()``产生的hash值能够让HashMap中的值均匀分布在数组中,可以提高HashMap的运行效率。
+如果``hashCode()``产生的hash值能够让HashMap中的元素均匀分布在数组中,可以提高HashMap的运行效率。
 一个良好的``hashCode()``方法首先是能快速地生成hash值,然后生成的hash值能使HashMap中的元素在数组中尽量均匀的分布,
 hash值不一定是唯一的,因为容量是固定的,总会有下标冲突的情况产生。
 
