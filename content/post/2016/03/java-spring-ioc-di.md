@@ -14,7 +14,7 @@ Spring中实现依赖注入通常有这么几种方式:<!--more-->
 ## 构造方法注入
 
 顾名思义,构造方法注入,就是被注入对象可以通过在其构造方法中声明依赖对象的参数列表,让Spring的IoC容器知道它需要哪些依赖对象。
-```
+```java
 public class Foo{
     private Bar bar;
     
@@ -24,7 +24,7 @@ public class Foo{
 }
 ```
 从构造方法的参数列表中可以看出,Foo类依赖Bar类,那么我们可以在Spring的XML配置文件进行Bean的配置
-```
+```xml
 <bean id="barClass" class="...Bar" />
 
 <bean id="fooClass" class="...Foo">
@@ -32,7 +32,7 @@ public class Foo{
 </bean>
 ```
 也可以使用注解的形式
-```
+```java
 @Component
 public class Foo{
     private Bar bar;
@@ -51,7 +51,7 @@ public class Foo{
 
 对于JavaBean对象来说,通常会通过``setXXX()``和``getXXX()``方法来访问对应的属性。这些``setXXX()``方法统称为``setter``方法,
 ``getXXX()``方法统称为``getter``方法。在Spring中也可以使用``setter``方法来将依赖的对象注入到被注入对象中。
-```
+```java
 public class SetterInjection{
     private Injection injection;
     
@@ -67,7 +67,7 @@ public class SetterInjection{
 }
 ```
 从``setter``方法可以将SetterInjection类依赖的Injection对象注入进来
-```
+```xml
 <bean id="foo" class="...Injection"/>
 
 <bean id="setInj" class="...SetterInjection">
@@ -75,7 +75,7 @@ public class SetterInjection{
 </bean>
 ```
 使用注解的形式
-```
+```java
 @Component("setterInjection")
 public class SetterInjection{
     private Injection injection;
@@ -96,7 +96,7 @@ public class SetterInjection{
 那么使用``value``属性。这里需要注意的是被``setter``方法注入的类必须有一个公共的默认无参构造器。
 
 构造方法注入和``setter``方法注入是可以一起使用的
-```
+```java
 public class MockBean{
     private String dependency1;
     private String dependency2;
@@ -111,14 +111,14 @@ public class MockBean{
     ...
 }
 ```
-```
+```xml
 <bean id="mockBean" class="...MockObject">
     <constructor-arg value="hello">
     <property name="dependency2" value="good"/>
 </bean>
 ```
 使用注解的形式
-```
+```java
 @Component
 public class MockBean{
     private String dependency1;
@@ -144,7 +144,7 @@ public class MockBean{
 一个对象是有状态的时候,这是非常必须的,那么可以将该Bean的``scope``配置为``prototype``。
 
 那么在使用了``prototype``之后就真的每次都会得到一个全新的对象了吗,看看下面这个例子
-```
+```java
 public class MockPrototype {
     private NewsBean newsBean;
 
@@ -162,7 +162,7 @@ public class MockPrototype {
 }
 ```
 配置为:
-```
+```xml
 <bean id="news" class="...NewsBean" scope="prototype"/>
 
 <bean id="mockPro" class="...MockPrototype">
@@ -170,7 +170,7 @@ public class MockPrototype {
 </bean>
 ```
 在``main``中多次调用``persistNews()``方法
-```
+```java
 public class Main {
     public static void main(String[] args) {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
@@ -192,7 +192,7 @@ persist ...NewsBean@239963d8
 <public|protected> [abstract] <return-type> theMethodName(no-arguments);
 ```
 只要方法符合上面的形式,就可以在容器配置为注入方法。
-```
+```xml
 <bean id="news" class="...NewsBean" scope="prototype"/>
 
 <bean id="mockPro" class="...MockPrototype">

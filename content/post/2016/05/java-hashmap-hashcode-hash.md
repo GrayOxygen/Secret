@@ -44,7 +44,7 @@ Java中的``hashCode()``方法,是顶层对象``Object``中的方法,因此Java�
 
 在知道了散列的原理后我们可以自己实现一个简单的``HashMap``(例子来源于《Java编程思想(第四版)》)
 
-```
+```java
 public class SimpleHashMap<K, V> extends AbstractMap<K, V> {
     //内部数组的容量
     static final int SIZE = 997;
@@ -155,7 +155,7 @@ hash值不一定是唯一的,因为容量是固定的,总会有下标冲突的�
 
 写一个简单的类并用上述的规则来覆盖``hashCode()``方法
 
-```
+```java
 public class SimpleHashCode {
     private static long counter = 0;
     private final long id = counter++;

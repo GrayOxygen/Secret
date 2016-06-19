@@ -62,7 +62,7 @@ PROPAGATION_REQUIRED通常作为默认的事务传播行为。
 可以直接使用``PlatformTransactionManager``或使用``TransactionTemplate``进行编程式事务管理。一般来说,推荐使用``TransactionTemplate``。
 与使用Spring的Jdbc类似,``TransactionTemplate``也使用了模版设计模式的封装,我们在使用的时候,需要实现``TransactionCallback``接口或
 ``TransactionCallbackWithoutResult``抽象类中的一个,两者的区别就是是否需要返回执行的结果。
-```
+```java
 public void service(){
     TransactionTemplate transactionTemplate = new TransactionTemplate();
     
@@ -76,7 +76,7 @@ public void service(){
     });
 }
 ```
-```
+```java
 public void service(){
     TransactionTemplate transactionTemplate = new TransactionTemplate();
     
@@ -94,7 +94,7 @@ public void service(){
 那么``TransactionTemplate``最终会为我们提交事务。那么如果要手动回滚事务应该怎么做呢,有两种方式:
 
 + 抛出``unchecked exception``。
-```
+```java
 public void service(){
         TransactionTemplate transactionTemplate = new TransactionTemplate();
         
@@ -112,7 +112,7 @@ public void service(){
 ```
 
 + 使用Callback接口公开的``TransactionStatus``将事务标记为``rollBackOnly``。
-```
+```java
 public void service(){
         TransactionTemplate transactionTemplate = new TransactionTemplate();
         
@@ -130,7 +130,7 @@ public void service(){
 ```
 
 两种方式可以同时使用,达到既回滚事务,又不以``unchecked exception``的形式向上层传播。
-```
+```java
 public void service(){
     TransactionTemplate transactionTemplate = new TransactionTemplate();
     
@@ -149,7 +149,7 @@ public void service(){
 ```
 
 还可以使用``TransactionStatus``的SavePoint机制来嵌套事务。
-```
+```java
 public void service(){
     TransactionTemplate transactionTemplate = new TransactionTemplate();
     
@@ -182,7 +182,7 @@ public void service(){
 ## Spring中的声明式事务管理
 
 首先,假设我们有一个服务接口
-```
+```java
 public interface FooService{
     service getService();
     service getServiceByDateTime(DateTime dateTime);
@@ -192,7 +192,7 @@ public interface FooService{
 }
 ```
 以及一个服务接口的实现类
-```
+```java
 public class SomeService implements FooService{
     private JdbcTemplate jdbcTemplate;
     
@@ -236,7 +236,7 @@ public class SomeService implements FooService{
 ### 使用**TransactionProxyFactoryBean**
 
 在XML配置文件中进行相关配置
-```
+```xml
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost:3306/test"/>
@@ -278,7 +278,7 @@ public class SomeService implements FooService{
 ### 使用**tx**命令空间
 
 使用Spring中AOP的配置方式来声明事务管理。
-```
+```xml
 <tx:advice id="txAdvice" transaction-manager="transactionManager">
     <tx:attributes>
         <tx:method name="getService" propagation="SUPPORTS" read-only="true" timeout="20"/>
@@ -306,7 +306,7 @@ public class SomeService implements FooService{
 
 ### 使用注解
 
-```
+```java
 @Transactional
 @Component
 public class SomeService implements FooService{
@@ -351,7 +351,7 @@ public class SomeService implements FooService{
 }
 ```
 需要在XML中加上以下配置通过反射来获取注解的信息
-```
+```xml
 <tx:annotation-driven transaction-manager="transactionManager"/>
 
 <!--注入声明了事务管理的someService类-->

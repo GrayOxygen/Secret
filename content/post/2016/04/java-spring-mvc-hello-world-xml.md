@@ -39,7 +39,7 @@ Controller对应的是DispatcherServlet的次级控制器,它本身实现了对�
 
 **pom.xml**
 
-```
+```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -128,7 +128,7 @@ Controller对应的是DispatcherServlet的次级控制器,它本身实现了对�
 
 **helloController.java**
 
-```
+```java
 package com.listenzhangbin.web.controller;
 
 import org.springframework.stereotype.Controller;
@@ -184,7 +184,7 @@ public class HelloController {
 
 **controller-servlet.xml**
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -207,7 +207,7 @@ public class HelloController {
 
 **applicationContext.xml**(这里是一个空的Spring XML配置)
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -219,7 +219,7 @@ public class HelloController {
 
 然后需要在**web.xml**中注册这个``DispatcherServlet``
 
-```
+```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

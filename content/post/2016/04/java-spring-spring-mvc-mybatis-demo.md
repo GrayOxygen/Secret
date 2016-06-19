@@ -30,7 +30,7 @@ topics = ["Java"]
 
 **pom.xml**
 
-```
+```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -143,7 +143,7 @@ topics = ["Java"]
 
 **applicationContext.xml**
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
@@ -190,7 +190,7 @@ log4j.logger.org.apache=INFO
 
 **数据库设计**
 
-```
+```sql
 CREATE TABLE `message` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `command` varchar(16) DEFAULT NULL,
@@ -204,7 +204,7 @@ CREATE TABLE `message` (
 
 **User.java**
 
-```
+```java
 package com.listenzhangbin.web.model;
 
 public class User {
@@ -261,7 +261,7 @@ public class User {
 
 **UserMapper.java**
 
-```
+```java
 package com.listenzhangbin.web.mapper;
 
 import com.listenzhangbin.web.model.User;
@@ -283,7 +283,7 @@ public interface UserMapper {
 
 **UserService.java**
 
-```
+```java
 package com.listenzhangbin.web.service;
 
 import com.listenzhangbin.web.mapper.UserMapper;
@@ -307,7 +307,7 @@ public class UserService {
 
 **DefaultController.java**
 
-```
+```java
 package com.listenzhangbin.web.controller;
 
 import com.listenzhangbin.web.model.User;

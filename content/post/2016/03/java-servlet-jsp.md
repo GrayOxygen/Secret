@@ -30,7 +30,7 @@ Maven是Apache官方出品的构建工具,可以处理编译、测试、打包�
 servlet本质上就是一个普通的Java类,那么为什么它能成为一个servlet呢,原因就是它实现了Servlet接口。
 一般我们在编写自己的servlet的时候,一般不会直接去实现Servlet接口,而是扩展HttpServlet抽象类,并且覆盖它的doGet()或doPost()等方法,
 这些方法是用来处理不同的Http请求的。下面是一个简单的servlet类
-```
+```java
 package com.listenzhangbin.web
 
 public class ServletTest extends HttpServlet{
@@ -48,7 +48,7 @@ doGet()方法有两个参数,HttpServletRequest和HttpServletResponse,这是非�
 可以看到servlet类没有构造函数,因为我们只需要用编译器提供的默认无参构造器即可。servlet类也没有main方法,
 这是因为servlet是由容器来调用的,因此不需要main方法,当请求到来时,容器会根据请求调用不同的servlet,那么容器是
 怎么知道什么情况调用什么servlet呢,这需要在部署描述文件(DD)web.xml中配置声明
-```
+```xml
 <servlet>
     <servlet-name>Foo</servlet-name>
     <servlet-class>com.listenzhangbin.web.ServletTest</servlet-class>
@@ -60,7 +60,7 @@ doGet()方法有两个参数,HttpServletRequest和HttpServletResponse,这是非�
 ```
 每个servlet都需要在web.xml中,当请求/serv的URL时,容器就会去调用ServletTest类。
 配置完后可以使用Maven的tomcat插件运行,Maven插件配置
-```
+```xml
 <plugin>
     <groupId>org.apache.tomcat.maven</groupId>
     <artifactId>tomcat6-maven-plugin</artifactId>
@@ -105,7 +105,7 @@ servlet的生命周期的三个重要时刻:
 
 默认的cookie是关闭浏览器窗口就自动失效的,使用``cookie.setMaxAge()``方法可以设置过期时间,这个方法需要一个参数,
 表示失效的时间间隔,单位为秒。也可以在web.xml中配置会话的过期时间
-```
+```xml
 <session-config>
     <session-timeout>15</session-timeout>
 </session-config>
@@ -119,7 +119,7 @@ servlet的生命周期的三个重要时刻:
 
 过滤器可以在请求到达servlet前过滤请求,在可以在servlet返回响应后过滤。Filter类要实现Filter接口,
 实现Filter接口的三个方法
-```
+```java
 package com.listenzhangbin.filter;
 
 import javax.servlet.*;
@@ -152,7 +152,7 @@ public class FilterTest implements Filter {
 ``chain.doFilter()``方法把Request和Response传递给过滤器链的下一个过滤器或者servlet。
 
 Filter也必须在web.xml中配置
-```
+```xml
 <filter>
     <filter-name>BeerRequest</filter-name>
     <filter-class>com.listenzhangbin.filter.BeerRequestFilter</filter-class>
@@ -176,7 +176,7 @@ Filter也必须在web.xml中配置
 得到调用,也就是过滤器链,执行顺序会根据在web.xml中声明的顺序执行,``<url-pattern>``总是在``<servlet-name>``之前。
 
 对于通过请求分派请求的Web资源声明的过滤器配置有所不同
-```
+```xml
 <filter-mapping>
     <filter-name>FilterTest</filter-name>
     <url-pattern>*.do</url-pattern>
