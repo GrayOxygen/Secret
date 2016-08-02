@@ -672,5 +672,5 @@ Javadoc对一些简单、明显的方法比如``getFoo``是可选的，这种情
 
 ## 声明
 
-本文档由本人翻译自(Google Java Style Guide)[https://google.github.io/styleguide/javaguide.html]。
-翻译过程中参考了Hawstein的博客(Google Java编程风格指南)[http://www.hawstein.com/posts/google-java-style.html]，在此表示感谢。
+本文档由本人翻译自[Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)。
+翻译过程中参考了Hawstein的博客[Google Java编程风格指南](http://www.hawstein.com/posts/google-java-style.html)，在此表示感谢。
