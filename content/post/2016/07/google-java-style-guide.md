@@ -1,5 +1,5 @@
 +++
-date = "2016-07-25T18:32:42+08:00"
+date = "2016-07-25T22:32:42+08:00"
 description = "[译]Google Java编程风格指南"
 draft = false
 tags = ["Java","Style Guide","Google"]
@@ -15,7 +15,7 @@ topics = ["Google Java Style Guide"]
 3. 源文件结构
 4. 格式
 5. 命名
-6. 编程实战
+6. 编程实践
 7. Javadoc
 
 ## 介绍
@@ -292,4 +292,385 @@ Java代码有一个100个字符的列限制。除了下面提到的，任何行�
   private Color color;  // may leave it unaligned
 ```
 
-> Tip:
+> Tip:对齐有助于增加代码的可读性，但是会为未来的维护带来问题。考虑到将来我们可能只需要修改其中的一行代码。这种修改可能会使原来的非常完美对齐的代码变得不是那么对齐，这种做法是允许的。更经常地情况是它提醒程序员(也许是你)去调整被修改的行附近的空格，并且有可能会引发一系列行的重新格式化。那**修改的一行代码**造成的影响非常大。最坏的情况可能会造成一些无意义的工作，最好的情况下也仍然会污染版本历史信息，降低代码review的速度，增加合并代码冲突的可能性。
+
+### 使用小括号来分组：推荐
+
+除非当作者和reviewer都认为去掉小括号也不会使得代码被误解，或者是去掉小括号能使代码增加可读性时，才应该省略小括号。假定每个读代码的人都能记住Java操作符的优先级时不合理的。
+
+### 具体的结构
+
+#### 枚举类
+
+在每个逗号后面跟着一个枚举常量，是否加换行是可选的。附加的空行(通常是一行)也是允许的。这是一种可能性：
+
+```java
+  private enum Answer {
+  YES {
+    @Override public String toString() {
+      return "yes";
+    }
+  },
+
+  NO,
+  MAYBE
+}
+```
+
+一个没有方法也没有常量注释的枚举类可以选择性的与一个数组初始化一样格式化。
+
+```java
+  private enum Suit { CLUBS, HEARTS, SPADES, DIAMONDS }
+```
+
+由于枚举类也是类，因此所有其它的类格式化规则全都适用。
+
+#### 变量声明
+
+##### 每次只声明一个变量
+
+每个变量声明(字段或者局部变量)只声明一个变量：不要使用类似``int a, b;``的形式。
+
+##### 当需要时才声明
+
+局部变量不要习惯性地在包含它们的块或者类似块结构的开始就声明。相反的，为了最小化作用域，局部变量应该在靠近它们第一次被使用的地方声明。局部变量声明后就应该初始化，或者尽快进行初始化。
+
+#### 数组
+
+##### 数组初始化：可写成块状结构
+
+数组初始化可以写成“块状结构”。举例来说，下面的这些方式(不是一个完整的列表)都是可行的：
+
+```java
+  new int[] {           new int[] {
+    0, 1, 2, 3            0,
+  }                       1,
+                          2,
+  new int[] {             3,
+    0, 1,               }
+    2, 3
+  }                     new int[]
+                            {0, 1, 2, 3}
+
+```
+
+##### 不要使用C语言风格的数组声明
+
+方括号是类型的一部分，而不是变量：``String[] args``,不是``String args[]``。
+
+#### Switch语句
+
+**术语说明：**switch结构大括号内的是一个或多个语句组。每个语句组由一个或多个switch标签组成(``case FOO:``或者``default:``)，后面跟着一个或多个语句。
+
+##### 缩进
+
+与其它的块状结构类似，switch块中的内容使用两个空格缩进。
+
+每个switch标签后新起一行，再增加两个空格的缩进，就像一个块的开始。后续的switch标签与之前的缩进级别相同，就像一个块的结束。
+
+##### Fall-through注释
+
+在一个switch块内，每个语句组要么通过``break,continue,return``或者抛出异常来终止，要么通过一个注释来表示程序将继续执行到下一个语句组中。任何能表示fall-through含义的注释都是可以的(通常使用``// fall through``)。这个特别的注释在最后的一个语句组是不需要的。例子：
+
+```java
+  switch (input) {
+    case 1:
+    case 2:
+      prepareOneOrTwo();
+      // fall through
+    case 3:
+      handleOneTwoOrThree();
+      break;
+    default:
+      handleLargeNumber(input);
+  }
+```
+
+注意在``case 1:``后面是不需要注释的，只有在语句组最后才需要。
+
+##### default情况要写出来
+
+每个switch语句包含一个default语句组，即使它是空的。
+
+#### 注解
+
+注解紧跟在文档块后面，应用于类、方法或者构造方法上，并且每行只写一个注解。这些换行不算自动换行，因此缩进的级别没有增加。例子：
+
+```java
+  @Override
+  @Nullable
+  public String getNameIfPresent() { ... }
+```
+
+例外：单个没有参数的注解可以和方法签名的第一行出现在同一行，比如：
+
+```java
+  @Override public int hashCode() { ... }
+```
+
+应用于这段的注解紧随文档块的出现，但在这种情况中，多个注解(可能有参数的)可能列在同一行；比如说：
+
+```java
+  @Partial @Mock DataLoader loader;
+```
+
+对于应用在参数、局部变量、类上的注解没有特别的格式化规则。
+
+#### 注释
+
+这部分将介绍注释的实现。Javadoc将在第7部分分开介绍。
+
+##### 块注释风格
+
+块注释与周围的代码保持相同的缩进级别。它们可以是``/* ... */``风格或者``// ...``风格。对于多行注释，后面的行必须以``*``开头并且与前面的行的``*``对齐。
+
+```java
+  /*
+   - This is          // And so           /* Or you can
+   - okay.            // is this.          * even do this. */
+   */
+```
+
+注释不要包含在由星号或者其它字符组成的框内。
+
+> Tip: 当在写多行注释时，如果你希望代码格式化程序在必要时能自动重新换行，那么使用``/* ... */``风格的注释。大部分的格式化程序对于``// ...``风格的注释不会重新自动换行。
+
+#### 修饰符
+
+如果存在类或者成员修饰符，按Java语言指定的顺序排序：
+
+```java
+  public protected private abstract default static final transient volatile synchronized native strictfp
+```
+
+#### 数字字面量
+
+``long``类型的整型字面量使用大写的``L``作为后缀，不要使用小写的(避免与数字1混淆)。比如说，使用``3000000000L``要好于``3000000000l``。
+
+## 命名
+
+### 对所有标示符都通用的规则
+
+标示符只使用ASCII字母或者数字，在少数情况下使用下面提到的下划线。这样每个有效的的标示符名字可以被正则表达式``\w+``匹配到。
+
+在Google Style中不使用那些特殊的前缀或者后缀，像那些例子里的``name_, mName, s_name``和``kName``。
+
+### 标示符类型的规则
+
+#### 包名
+
+包名应该全部使用小写，连续的单词只是简单的拼接起来(不使用下划线)。比如说，``com.example.deepspace``,不是``com.example.deepSpace``或者``com.example.deep_space``。
+
+#### 类名
+
+类名使用大写的驼峰命名法。
+
+类名通常是名词或者名次短语。比如说，``Character``或者``ImmutableList``。接口名字可能是名词或者名词短语(例如：``List``)，有时候也会使用形容词或者形容词短语(例如：``Readable``)。
+
+对于注解的命名没有特定的规则甚至没有完善的约定。
+
+测试类的命名以被测试的类的名字开头，以``Test``结尾。比如说，``HashTest``或者``HashIntegrationTest``。
+
+#### 方法名
+
+方法名使用小写的驼峰命名法。
+
+方法名通常使用动词或动词短语。比如说，``sendMessage``或``stop``。
+
+下划线可能出现在JUnit测试方法名称中用以分隔名称的逻辑组件。一个典型的模式是``test<MethodUnderTest>_<state>``，比如说``testPop_emptyStack``。并不存在唯一正确的方式来命名测试的方法。
+
+#### 常量名
+
+常量名的命名模式为``CONSTANT_CASE``：全部使用大写字母，单词之间使用下划线分隔。但是，到底什么才是一个常量？
+
+每个常量是一个static final的字段，但不是所有的static final的字段都是常量。在决定一个字段是否是常量前，先考虑这个字段是否真的感觉是一个常量。比如说，如果任何一个该实例观测到的状态是可以改变的，那么几乎可以确定它不是一个常量。仅仅只是打算不改变对象是不够的。例子：
+
+```java
+  // Constants
+  static final int NUMBER = 5;
+  static final ImmutableList<String> NAMES = ImmutableList.of("Ed", "Ann");
+  static final Joiner COMMA_JOINER = Joiner.on(','); // because Joiner is immutable
+  static final SomeMutableType[] EMPTY_ARRAY = {};
+  enum SomeEnum { ENUM_CONSTANT }
+
+  // Not constants
+  static String nonFinal = "non-final";
+  final String nonStatic = "non-static";
+  static final Set<String> mutableCollection = new HashSet<String>();
+  static final ImmutableSet<SomeMutableType> mutableElements = ImmutableSet.of(mutable);
+  static final Logger logger = Logger.getLogger(MyClass.getName());
+  static final String[] nonEmptyArray = {"these", "can", "change"};
+```
+
+这些名字通常是名词或者名次短语。
+
+#### 非常量字段名
+
+非常量字段名(静态或者非静态的)使用小写的驼峰命名法。
+
+这些名字通常是名词或者名字短语。例如：``computedValues``或``index``。
+
+#### 参数名
+
+参数名使用小写的驼峰命名法。
+
+public方法中应该避免使用一个字符的参数名。
+
+#### 局部变量名
+
+局部变量名使用小写的驼峰命名法。
+
+局部变量即使是final并且是不可变的，也不应该把它作为常量或者当作常量来对待。
+
+#### 类型变量名
+
+每个类型变量命名使用下面两种风格中的一种：
+
++ 一个大写字母，后面可以跟一个数组(例如：``E, T, X, T2``)
++ 以类命名方式，后面跟一个大些的字母T(例如：``RequestT, FooBarT``)
+
+### 驼峰命名法
+
+有时候有不止一个理由将英语短语转换成驼峰命名法的形式，比如说存在首字母缩略词或者一些不常见的结构像“IPv6”或者“iOS”。Google Style指定以下方案：
+
+名字以``prose form``形式开始：
+
+1. 把短语转换为纯ASCII编码字符并且删除任何省略符号。比如说，“"Müller's algorithm”应该转换为“Muellers algorithm”。
+2. 把这个结果切分为单词，在空格或其它标点符号处(通常是-)分隔开。
+ + 推荐：如果某个单词已经有了常用的驼峰表现形式，按它的组成把它分隔开(例如："AdWords"变为"ad words")。注意“iOS”并不是一个真正的驼峰命名法形式，因此该推荐对它并不适用。
+3. 现在把所有字母都变为小写(包括首字母缩略词)，然后把下列情况下的单词的第一个字母改为大写：
+ + 每个单词的首字母都大写，得到大写的驼峰命名法。
+ + 除了第一个单词的每个单词，得到小写的驼峰命名法。
+4. 最终，将所有的单词连接起来的到一个标示符。
+
+注意，原单词的大小写几乎都是忽略的。例子：
+
+| Prose form | Correct | Incorrect |
+| ------| ------ | ------ |
+| "XML HTTP request" | XmlHttpRequest | XMLHTTPRequest |
+| "new customer ID" | newCustomerId | newCustomerID |
+| "inner stopwatch" |innerStopwatch| innerStopWatch |
+| "supports IPv6 on iOS?" |supportsIpv6OnIos|supportsIPv6OnIOS|
+| "YouTube importer" |YouTubeImporter
+YoutubeImporter*| |
+
+> Note: 在英语中，某些含有连字符的单词形式不唯一：例如“nonempty”和“non-empty”都是正确的，所以方法名“checkNonempty”和“checkNonEmpty”也都是正确的。
+
+## 编程实践
+
+### 总是使用``@Override``
+
+只要是合法的，方法就应该标注``@Override``注解。这包括子类覆盖基类的方法，类实现接口的方法，以及一个接口中的方法重新指定父接口的方法。
+
+例外：当基类中的方法已经被标注为``@Deprecated``,可以省略``@Override``注解。
+
+### 异常捕获：不要忽略
+
+除了下面的说明，对捕获的异常不做响应的行为是极少正确的。(通常的响应是把它作为log打印出来，或者它被认为是不可能的，当作一个``AssertionError``重新抛出)
+
+当它确实是在catch块中不需要做任何响应，应该在注释中说明正当的理由。
+
+```java
+  try {
+    int i = Integer.parseInt(response);
+    return handleNumericResponse(i);
+  } catch (NumberFormatException ok) {
+    // it's not numeric; that's fine, just continue
+  }
+  return handleTextResponse(response);
+```
+
+例外：在测试中，一个捕获的异常的名字以``expected``开头，那么它会被忽略并且没有注释。下面是一种非常常见的情形，用以确保测试中抛出一个期望中的异常，所以在这里注释不是必须的。
+
+```java
+  try {
+    emptyStack.pop();
+    fail();
+  } catch (NoSuchElementException expected) {
+  }
+```
+
+### 静态成员：使用类进行调用
+
+使用类名调用静态类成员，而不是类的引用或者表达式：
+
+```java
+  Foo aFoo = ...;
+  Foo.aStaticMethod(); // good
+  aFoo.aStaticMethod(); // bad
+  somethingThatYieldsAFoo().aStaticMethod(); // very bad
+```
+
+### Finalizers:不要使用
+
+只有极少数情况需要覆盖``Object.finalize``。
+
+> Tip：不要这么做。如果你必须要这么做，首先仔细阅读并理解《effective java》第7条，“Avoid Finalizers”，然后不要这么这么做。
+
+## Javadoc
+
+### 格式化
+
+#### 一般形式
+
+Javadoc块的基本格式化形式如下所示：
+
+```java
+  /**
+   * Multiple lines of Javadoc text are written here,
+   * wrapped normally...
+   */
+  public int method(String p1) { ... }
+```
+
+或者单行注释：
+
+```java
+  /** An especially short bit of Javadoc. */
+```
+
+基本形式总是可以接受的。当注释中没有@符号并且整个Javadoc可以合并为一行时，可以使用单行注释的形式。
+
+#### 段落
+
+空行(即，只包含最左侧星号的行)会出现在段落之间和Javadoc标记(@XXX)之前(如果有的话)。 除了第一个段落，每个段落第一个单词前都有标签<p>，并且它和第一个单词间没有空格。
+
+#### @字句
+
+任何标准的@字句按以下顺序使用``@param, @return, @throws, @deprecated``,并且这四种类型不会出现空的描述。当一个@字句不能放在单行中时，后续的行在@后以4个空格(或者更多)缩进。
+
+### 摘要片段
+
+每个类或成员的Javadoc以一个简短的摘要片段开始。这个片段是非常重要的。在某些情况下，它是唯一出现的文本，比如在类和方法索引中。
+
+这是一个片段——一个名词或者动词短语，不是一个完整的句子。它不以``A {@code Foo} is a...``或者``This method returns...``开头，也不是一个完整的祈使句，类似``Save the record.``。然而，片段是大写的并且加了标点符号就像它是一个完整的句子。
+
+> Tip:一个常见的错误是以``/** @return the customer ID */``的形式写简单的Javadoc。这是不正确的，应该改成``/** Returns the customer ID. */``。
+
+### 在哪里使用Javadoc
+
+至少每个``public``类和每个``public``或者``protected``的类成员处需要使用Javadoc，以下会说明一些例外。
+
+额外的Javadoc内容也会存在，在**非必需的Javadoc**一节中说明。
+
+#### 例外：不需要说明的方法
+
+Javadoc对一些简单、明显的方法比如``getFoo``是可选的，这种情况下除了写"Returns the foo"确实没什么值得写了。
+
+> 重要：使用这个例外来判断是否应该省略读者应该知道的信息是不合适的。比如说，对于名为``getCanonicalName``的方法，不因该省略它的文档(根据原理它可能只是说``/** Returns the canonical name. */``)通常读者可能不知道"canonical name"的含义。
+
+#### 例外：重写
+
+如果一个方法重写了基类中的方法，那么Javadoc不是必须的。
+
+#### 可选的Javadoc
+
+其它类或成员在需要时可以使用Javadoc。
+
+当一条注释会被用来定义类或成员的用途或者行为的时候，该注释应该写成Javadoc(使用``/**``)。
+
+可选的Javadoc不需要严格的遵守7.1.2，7.1.3和7.2节的格式化规则，当然，也是推荐遵守的。
+
+## 声明
+
+本文档由本人翻译自(Google Java Style Guide)[https://google.github.io/styleguide/javaguide.html]。翻译过程中参考了Hawstein的博客(Google Java编程风格指南)[http://www.hawstein.com/posts/google-java-style.html]，在此表示感谢。
