@@ -551,8 +551,7 @@ public方法中应该避免使用一个字符的参数名。
 | "new customer ID" | newCustomerId | newCustomerID |
 | "inner stopwatch" |innerStopwatch| innerStopWatch |
 | "supports IPv6 on iOS?" |supportsIpv6OnIos|supportsIPv6OnIOS|
-| "YouTube importer" |YouTubeImporter
-YoutubeImporter*| |
+| "YouTube importer" |YouTubeImporter or YoutubeImporter*| |
 
 > Note: 在英语中，某些含有连字符的单词形式不唯一：例如“nonempty”和“non-empty”都是正确的，所以方法名“checkNonempty”和“checkNonEmpty”也都是正确的。
 
@@ -673,4 +672,5 @@ Javadoc对一些简单、明显的方法比如``getFoo``是可选的，这种情
 
 ## 声明
 
-本文档由本人翻译自(Google Java Style Guide)[https://google.github.io/styleguide/javaguide.html]。翻译过程中参考了Hawstein的博客(Google Java编程风格指南)[http://www.hawstein.com/posts/google-java-style.html]，在此表示感谢。
+本文档由本人翻译自(Google Java Style Guide)[https://google.github.io/styleguide/javaguide.html]。
+翻译过程中参考了Hawstein的博客(Google Java编程风格指南)[http://www.hawstein.com/posts/google-java-style.html]，在此表示感谢。
