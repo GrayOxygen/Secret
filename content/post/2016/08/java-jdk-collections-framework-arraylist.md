@@ -16,7 +16,7 @@ topics = ["JDK源码分析"]
 
 ![Collections framework overview](http://7xsskq.com1.z0.glb.clouddn.com/blog/collections-framework-overview/collections-framework-overview.png "Collections framework overview")
 
-图中列出了主要使用的接口和类。可以看到，Java中集合框架的主要被分成四个组——``List,Set,Map,Queue``。``List``的主要实现有``ArrayList``，``LinkedList``等，``Set``的主要实现有``HashSet``，``TreeSet``，``LinkedHashSet``等，``Map``的主要实现有``HashMap``，``LinkedHashMap``，``TreeMap``等，Queue的主要实现是``LinkedList``和``PriorityQueue``等。不同的集合适用于不同的场景，如果适用不当，可能会造成性能问题等。
+图中列出了主要使用的接口和类。可以看到，Java中集合框架的主要被分成四个组(或者说4个接口)——``List,Set,Map,Queue``。各个接口下又有各自的抽象类，抽象类下是具体的实现类。``List``的主要实现有``ArrayList``，``LinkedList``等，``Set``的主要实现有``HashSet``，``TreeSet``，``LinkedHashSet``等，``Map``的主要实现有``HashMap``，``LinkedHashMap``，``TreeMap``等，Queue的主要实现是``LinkedList``和``PriorityQueue``等。不同的集合适用于不同的场景，如果适用不当，可能会造成性能问题等。
 
 ## ArrayList
 
