@@ -58,7 +58,7 @@ private int size;
 ```java
 public int size() {
         return size;
-    }
+}
 ```
 
 ### 增加元素(add，addAll方法)
@@ -76,7 +76,7 @@ private void grow(int minCapacity) {
             newCapacity = hugeCapacity(minCapacity);
         // minCapacity is usually close to size, so this is a win:
         elementData = Arrays.copyOf(elementData, newCapacity);
-    }
+}
 ```
 
 ``grow``方法首先获取当前元素的个数保存为旧的容量，将旧容量*1.5作为新的容量，如果新容量小于需要调整到的最小容量，那么将新容量赋值为最小容量，如果新容量大于数组最大容量，那么将新容量赋值为数组最大容量，最后，将原数组复制到新容量大小的数组中。
@@ -93,7 +93,7 @@ public boolean addAll(Collection<? extends E> c) {
         System.arraycopy(a, 0, elementData, size, numNew);
         size += numNew;
         return numNew != 0;
-    }
+}
 ```
 
 与``add``方法的不同之处在于``addAll``方法不是将数组的容量加1，而是将数组的容量增加传递进来的集合的元素个数，最后将参数集合转换成的数组复制到ArrayList中存放元素的数组中，最后将size增加相应的长度。
@@ -107,7 +107,7 @@ private void ensureExplicitCapacity(int minCapacity) {
         // overflow-conscious code
         if (minCapacity - elementData.length > 0)
             grow(minCapacity);
-    }
+}
 ```
 
 ``ensureExplicitCapacity``是一个ArrayList的私有方法，当调用add方法时，会调用这个方法去判断是否需要增加数组的容量，判断的依据是，当需要的最小容量大于当前数组的长度时，就会发生调整数组容量的操作，因此可以事先将容量一次性增加，避免了每次add时都调整容量加1。
@@ -121,7 +121,7 @@ public void ensureCapacity(int minCapacity) {
         if (minCapacity > minExpand) {
             ensureExplicitCapacity(minCapacity);
         }
-    }
+}
 ```
 
 ``ensureCapacity``方法可以用来调整ArrayList的容量大小。
@@ -137,7 +137,7 @@ public void add(int index, E element) {
                          size - index);
         elementData[index] = element;
         size++;
-    }
+}
 ```
 
 首先是检查需要插入元素的索引是否超出了数组的长度，然后将数组的容量加1，将原数组的需要插入的位置之后的元素往后复制1个位置，将需要插入元素的位置赋值为传递进来的参数element，最后将size增加1。
@@ -154,7 +154,7 @@ public E get(int index) {
         rangeCheck(index);
 
         return elementData(index);
-    }
+}
 ```
 
 这也是为什么ArrayList的随机访问元素操作的性能比较好的原因。
@@ -170,7 +170,7 @@ public E set(int index, E element) {
         E oldValue = elementData(index);
         elementData[index] = element;
         return oldValue;
-    }
+}
 ```
 
 ### 删除元素(remove方法)
@@ -191,7 +191,7 @@ public E remove(int index) {
         elementData[--size] = null; // clear to let GC do its work
 
         return oldValue;
-    }
+}
 ```
 
 首先检查传递的索引是否小于等于数组的长度，将该位置上原来的值保存在一个变量中，接着获得需要移动的元素的个数，如果需要移动的元素的个数大于0，那么将该索引之后的元素往前复制一个位置，最后将数组最后的一个值赋值为null，并且size减小1，最后返回原来的值。
@@ -214,7 +214,7 @@ public boolean remove(Object o) {
                 }
         }
         return false;
-    }
+}
 ```
 
 第二种``remove``方法比第一种方法要略复杂一点。首选判断传递进来的元素是不是为``null``，如果为null，则遍历整个数组，如果找到一个元素的值为``null``,则删除这个元素，删除的方法为：
@@ -227,7 +227,7 @@ private void fastRemove(int index) {
             System.arraycopy(elementData, index+1, elementData, index,
                              numMoved);
         elementData[--size] = null; // clear to let GC do its work
-    }
+}
 ```
 
 ``fastRemove``方法与传递索引的``remove``方法非常类似，只是少了检查索引的合法性和不返回被修改前的值。删除后，返回true。
@@ -240,7 +240,7 @@ private void fastRemove(int index) {
 
 ### 其它常用方法
 
-``contains``，``indexOf``,``lastIndexOf``也是常用的方法，分别是检查ArrayList中是否还有参数的值，正向获取某个元素的索引，反向获取某个元素的索引。只需要了解``indexOf``方法，三个方法是类似的。
+``contains``，``indexOf``,``lastIndexOf``也是常用的方法，分别是检查ArrayList中是否含有参数的值，正向获取某个元素的索引，反向获取某个元素的索引。只需要了解``indexOf``方法，三个方法是类似的。
 
 ```java
 public int indexOf(Object o) {
@@ -254,10 +254,37 @@ public int indexOf(Object o) {
                     return i;
         }
         return -1;
-    }
+}
 ```
 
-代码非常简单，就是遍历一遍数组，查找是否含有相同的值。``contains``方法就是掉用的``indexOf``方法，``lastIndexOf``方法只是把遍历的顺序改为从后往前遍历。
+代码非常简单，就是遍历一遍数组，查找是否含有相同的值。``contains``方法就是调用的``indexOf``方法，``lastIndexOf``方法只是把遍历的顺序改为从后往前遍历。
+
+``clear``方法是清空整个ArrayList，实现方法为遍历整个数组，将有的元素赋值为null，并将size改为0。
+
+```java
+public void clear() {
+        modCount++;
+
+        // clear to let GC do its work
+        for (int i = 0; i < size; i++)
+            elementData[i] = null;
+
+        size = 0;
+}
+```
 
 ## 总结
 
+``ArrayList``是用动态调整大小的数组实现的。每次add操作都会调整一次底层数组的容量大小，因此在需要插入大量元素时，预先调整数组的容量可提高性能，避免每次add都会发生数组复制。
+
+建议覆盖ArrayList中的类的``equals``和``hashCode``方法。
+
+``ArrayList``随机访问元素性能较好，在需要在集合中间频繁的删除插入元素的时候不太适用，选择``LinkedList``更好。
+
+``ArrayList``是线程不安全的，需要手动进行线程的同步保证线程的安全性，或者使用``synchronizedList``包装一层，如:
+
+```java
+List list = Collections.synchronizedList(new ArrayList(...));
+```
+
+也可以使用``concurrent``包下的集合框架。
