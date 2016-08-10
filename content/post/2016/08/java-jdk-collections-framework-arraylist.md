@@ -3,7 +3,7 @@ date = "2016-08-09T17:39:42+08:00"
 description = "JDK集合框架源码分析之ArrayList"
 draft = false
 tags = ["Java","JDK源码分析","Collections-framework","ArrayList"]
-title = "Java集合框架JDK源码分析之ArrayList"
+title = "JDK集合框架源码分析之ArrayList"
 topics = ["JDK源码分析"]
 
 +++
@@ -79,7 +79,7 @@ private void grow(int minCapacity) {
 }
 ```
 
-``grow``方法首先获取当前元素的个数保存为旧的容量，将旧容量*1.5作为新的容量，如果新容量小于需要调整到的最小容量，那么将新容量赋值为最小容量，如果新容量大于数组最大容量，那么将新容量赋值为数组最大容量，最后，将原数组复制到新容量大小的数组中。
+``grow``方法首先获取当前元素的个数保存为旧的容量，将旧容量*1.5倍作为新的容量，如果新容量小于需要调整到的最小容量，那么将新容量赋值为最小容量，如果新容量大于数组最大容量，那么将新容量赋值为数组最大容量，最后，将原数组复制到新容量大小的数组中。
 
 代码部分还是比较好理解的，唯一可能会有疑惑的地方是``oldCapacity >> 1``，这是一个位移操作，相当于``oldCapacity/2``，使用位操作的原因是可能位操作性能更好。
 
@@ -98,7 +98,8 @@ public boolean addAll(Collection<? extends E> c) {
 
 与``add``方法的不同之处在于``addAll``方法不是将数组的容量加1，而是将数组的容量增加传递进来的集合的元素个数，最后将参数集合转换成的数组复制到ArrayList中存放元素的数组中，最后将size增加相应的长度。
 
-在使用``add``方法增加大量的元素时，可以先将ArrayList的容量一次性增加，避免多次地动态调整数组的大小而发生的数组复制操作，这在某些情况下是非常有必要的，比如说在循环中调用``add``方法。
+在使用``add``方法增加大量的元素时，可以先将ArrayList的容量一次性增加，避免多次地动态调整数组的大小而发生的数组复制操作，
+这就好比在申请内存时一下子申请一块内存的性能要优于多次的申请内存。在某些情况下这是非常有必要的，比如说在循环中调用``add``方法。
 
 ```java
 private void ensureExplicitCapacity(int minCapacity) {
@@ -240,7 +241,7 @@ private void fastRemove(int index) {
 
 ### 其它常用方法
 
-``contains``，``indexOf``,``lastIndexOf``也是常用的方法，分别是检查ArrayList中是否含有参数的值，正向获取某个元素的索引，反向获取某个元素的索引。只需要了解``indexOf``方法，三个方法是类似的。
+``contains``，``indexOf``，``lastIndexOf``也是常用的方法，分别是检查ArrayList中是否含有参数的值，正向获取某个元素的索引，反向获取某个元素的索引。只需要了解``indexOf``方法，三个方法是类似的。
 
 ```java
 public int indexOf(Object o) {
