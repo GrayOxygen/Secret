@@ -34,13 +34,13 @@ list.add(3);
 ArrayList底层采用的存储数据结构是数组，确切地说是动态调整大小的数组。既然是数组，当然需要指定长度，也就是容量。JDK中默认的容量是10:
 
 ```java
-    private static final int DEFAULT_CAPACITY = 10;
+private static final int DEFAULT_CAPACITY = 10;
 ```
 
 底层存储数据的数组：
 
 ```java
-    transient Object[] elementData;
+transient Object[] elementData;
 ```
 
 ## ArrayList的基本操作
@@ -50,13 +50,13 @@ ArrayList底层采用的存储数据结构是数组，确切地说是动态调�
 ArrayList类中用一个``size``字段记录了当前存储的数据的个数，也就是数组的长度,每当调用``add``或``remove``等方法时，会对``size``字段做出相应的修改。
 
 ```java
-    private int size;
+private int size;
 ```
 
 调用``size()``方法就是简单的返回``size``字段。
 
 ```java
-    public int size() {
+public int size() {
         return size;
     }
 ```
@@ -66,7 +66,7 @@ ArrayList类中用一个``size``字段记录了当前存储的数据的个数，
 每当调用``add()``方法往ArrayList中添加元素的时候，ArrayList类内部都会先将目前数组的容量增加1，增加容量的核心方法是``grow()``方法
 
 ```java
-    private void grow(int minCapacity) {
+private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
         int newCapacity = oldCapacity + (oldCapacity >> 1);
@@ -86,7 +86,7 @@ ArrayList类中用一个``size``字段记录了当前存储的数据的个数，
 可以看到，每次add操作都会发生一次底层数组的复制操作，因此如果可以的话尽量使用``addAll()``方法，一次性增加所有的元素，这样只会发生一次数组的复制。
 
 ```java
-    public boolean addAll(Collection<? extends E> c) {
+public boolean addAll(Collection<? extends E> c) {
         Object[] a = c.toArray();
         int numNew = a.length;
         ensureCapacityInternal(size + numNew);  // Increments modCount
@@ -96,4 +96,33 @@ ArrayList类中用一个``size``字段记录了当前存储的数据的个数，
     }
 ```
 
+与``add()``方法的不同之处在于``addAll()``方法不是将数组的容量加1，而是将数组的容量增加传递进来的集合的元素个数，最后将参数集合转换成的数组复制到ArrayList中存放元素的数组中，最后将size增加相应的长度。
+
+在使用``add()``方法增加大量的元素时，可以先将ArrayList的容量一次性增加，避免多次地动态调整数组的大小而发生的数组复制操作，这在某些情况下是非常有必要的，比如说在循环中调用``add()``方法。
+
+```java
+private void ensureExplicitCapacity(int minCapacity) {
+        modCount++;
+
+        // overflow-conscious code
+        if (minCapacity - elementData.length > 0)
+            grow(minCapacity);
+    }
+```
+
+``ensureExplicitCapacity()``是一个ArrayList的私有方法，当调用add方法时，会调用这个方法去判断是否需要增加数组的容量，判断的依据是，当需要的最小容量大于当前数组的长度时，就会发生调整数组容量的操作，因此可以事先将容量一次性增加，避免了每次add时都调整容量加1。
+
+```java
+public void ensureCapacity(int minCapacity) {
+        int minExpand = (elementData != DEFAULTCAPACITY_EMPTY_ELEMENTDATA)
+            ? 0
+            : DEFAULT_CAPACITY;
+
+        if (minCapacity > minExpand) {
+            ensureExplicitCapacity(minCapacity);
+        }
+    }
+```
+
+``ensureCapacity()``方法可以用来调整ArrayList的容量大小。
 
