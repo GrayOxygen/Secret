@@ -287,4 +287,4 @@ public void clear() {
 List list = Collections.synchronizedList(new ArrayList(...));
 ```
 
-也可以使用``concurrent``包下的集合框架。
+也可以使用``concurrent``包下的为并发设计的集合框架。
