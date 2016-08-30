@@ -8,7 +8,7 @@ topics = ["Docker"]
 
 +++
 
-Docker是一个近年来非常火热的开源项目，使用Docker可以将我们的应用程序打包，非常方便。最近简单地学习了一下Docker的基本使用，在此做一个学习笔记。
+Docker是一个近年来非常火热的开源项目，使用Docker可以将我们的应用程序打包进行部署、测试等等，非常方便。最近简单地学习了一下Docker的基本使用，在此做一个学习笔记。<!--more-->
 
 ## 安装
 
@@ -90,7 +90,7 @@ docker pull redis
 ```
 docker images
 
-output：
+#output：
 
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 redis               latest              50e38ce0458f        3 days ago          185 MB
@@ -189,7 +189,7 @@ docker run -d -p 6378:6379 —-name port-redis redis
 
 运行一个名字为port-redis的容器，使用redis镜像，将Docker中的redis的6379端口映射到本机的6378端口。
 
-这个时候我们就可以连接Redis进行开发等等，非常方便。
+映射完成之后我们就可以连接Redis进行开发等等，非常方便。
 
 **删除容器**
 
