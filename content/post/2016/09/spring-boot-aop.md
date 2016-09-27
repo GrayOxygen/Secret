@@ -81,3 +81,5 @@ public class Config {
 
 只需要使用``@EnableAspectJAutoProxy``注解开启Spring Boot的AOP支持即可。
 
+最后，在调用``download``方法之后就会打印出本次处理的用时。
+
