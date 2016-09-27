@@ -8,9 +8,9 @@ topics = ["Spring Boot"]
 
 +++
 
-Spring Boot是基于Spring的用来开发Web应用的框架，功能与Spring MVC有点类似，但是Spring Boot的一大特点就是需要的配置非常少。Spring Boot推荐``convention over configuration``，也就是约定大于配置，因此Spring Boot会帮你做许多自动的配置，并且Spring Boot使用的是Java Config，几乎可以做到零XML文件配置。
+Spring Boot是基于Spring的用来开发Web应用的框架，功能与Spring MVC有点类似，但是Spring Boot的一大特点就是需要的配置非常少。Spring Boot推荐``convention over configuration``，也就是约定大于配置，因此Spring Boot会帮你做许多自动的配置，并且Spring Boot使用的是Java Config，几乎可以做到零XML文件配置。<!--more-->
 
-假设现在有这样一种场景，需要统计某个接口的处理耗时，我们可以使用AOP来处理这种需求，在Spring Boot中使用AOP也非常简单，只需要一点简单的配置即可。
+假设现在有这样一种场景，需要统计某个接口的处理耗时，我们可以使用AOP来实现，在Spring Boot中使用AOP也非常简单，只需要一点简单的配置即可。
 
 ## 需要使用AOP的类
 
