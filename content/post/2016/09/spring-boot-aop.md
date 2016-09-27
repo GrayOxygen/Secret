@@ -68,6 +68,8 @@ public class VipAspect {
 }
 ```
 
+这里使用了注解来标记切点，也可以直接按照方法名称来定义，具体的使用方法可以参考官方文档。
+
 ## 配置Spring Boot支持AOP
 
 ```java
