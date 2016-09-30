@@ -2,9 +2,9 @@
 date = "2016-09-30T15:32:40+08:00"
 description = "Spring AOP的实现原理"
 draft = false
-tags = ["Java","Spring","AOP"]
+tags = ["Java","Spring AOP","CGLIB"]
 title = "Spring AOP的实现原理"
-topics = ["Spring AOP"]
+topics = ["AOP"]
 
 +++
 
@@ -89,3 +89,148 @@ public void ajc$around$com_listenzhangbin_aop_TxAspect$1$f54fe983(AroundClosure 
 
 ## 使用Spring AOP
 
+与AspectJ的静态代理不同，Spring AOP使用的动态代理，所谓的动态代理就是说AOP框架不会去修改字节码，而是在内存中临时为方法生成一个AOP对象，这个AOP对象包含了目标对象的全部方法，并且在特定的切点做了增强处理，并回调原对象的方法。
+
+Spring AOP中的动态代理主要有两种方式，JDK动态代理和CGLIB动态代理。JDK动态代理通过反射来接收被代理的类，JDK动态代理要求被代理的类必须实现一个接口。JDK动态代理的核心是``InvocationHandler``接口和``Proxy``类。
+
+如果目标类没有实现接口，那么Spring AOP会选择使用CGLIB来动态代理目标类。CGLIB（Code Generation Library），是一个代码生成的类库，可以在运行时动态的生成某个类的子类，注意，CGLIB是通过继承的方式做的动态代理，因此如果某个类被标记为``final``，那么它是无法使用CGLIB做动态代理的。
+
+为了验证以上的说法，可以做一个简单的测试，首先测试实现接口的情况。
+
+定义一个接口
+
+```java
+public interface Person {
+    String sayHello(String name);
+}
+```
+
+实现类
+
+```java
+@Component
+public class Chinese implements Person {
+
+    @Timer
+    @Override
+    public String sayHello(String name) {
+        System.out.println("-- sayHello() --");
+        return name + " hello, AOP";
+    }
+
+    public void eat(String food) {
+        System.out.println("我正在吃：" + food);
+    }
+
+}
+```
+
+这里的``@Timer``注解是我自己定义的一个普通注解，用来标记Pointcut。
+
+定义Aspect
+
+```java
+@Aspect
+@Component
+public class AdviceTest {
+
+    @Pointcut("@annotation(com.listenzhangbin.aop.Timer)")
+    public void pointcut() {
+    }
+
+    @Before("pointcut()")
+    public void before() {
+        System.out.println("before");
+    }
+}
+```
+
+运行
+
+```java
+@SpringBootApplication
+@RestController
+public class SpringBootDemoApplication {
+
+    //这里必须使用Person接口做注入
+    @Autowired
+    private Person chinese;
+
+    @RequestMapping("/test")
+    public void test() {
+        chinese.sayHello("listen");
+        System.out.println(chinese.getClass());
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootDemoApplication.class, args);
+    }
+}
+```
+
+输出
+
+```
+before
+-- sayHello() --
+class com.sun.proxy.$Proxy53
+```
+
+可以看到类型是``com.sun.proxy.$Proxy53``，也就是前面提到的Proxy类，因此这里Spring AOP使用了JDK的动态代理。
+
+再来看看不实现接口的情况，修改``Chinese``类
+
+```java
+@Component
+public class Chinese {
+
+    @Timer
+//    @Override
+    public String sayHello(String name) {
+        System.out.println("-- sayHello() --");
+        return name + " hello, AOP";
+    }
+
+    public void eat(String food) {
+        System.out.println("我正在吃：" + food);
+    }
+
+}
+```
+
+运行
+
+```java
+@SpringBootApplication
+@RestController
+public class SpringBootDemoApplication {
+
+    //直接用Chinese类注入
+    @Autowired
+    private Chinese chinese;
+
+    @RequestMapping("/test")
+    public void test() {
+        chinese.sayHello("listen");
+        System.out.println(chinese.getClass());
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootDemoApplication.class, args);
+    }
+}
+```
+
+输出
+
+```
+before
+-- sayHello() --
+class com.listenzhangbin.aop.Chinese$$EnhancerBySpringCGLIB$$56b89168
+```
+
+可以看到类被CGLIB增强了，也就是动态代理。这里的CGLIB代理就是Spring AOP的代理，这个类也就是所谓的AOP代理，AOP代理类在切点动态地织入了增强处理。
+
+## 小结
+
+AspectJ在编译时就增强了目标对象，Spring AOP的动态代理则是在每次运行时动态的增强，生成AOP代理对象，区别在于生成AOP代理对象的时机不同，相对来说AspectJ的静态代理方式具有更好的性能，但是AspectJ需要特定的编译器进行处理，而Spring AOP则无需特定的编译器处理。
