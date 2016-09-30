@@ -12,9 +12,9 @@ AOP（Aspect Orient Programming），我们一般称为面向方面（切面）�
 
 ## 使用AspectJ的编译时增强实现AOP
 
-之前说了，AspectJ是静态代理的增强，所谓的静态代理就是AOP框架会在编译阶段生成AOP代理类，因此也称为编译时增强。
+之前提到，AspectJ是静态代理的增强，所谓的静态代理就是AOP框架会在编译阶段生成AOP代理类，因此也称为编译时增强。
 
-举个实例的例子来说，首先我们有一个普通的``Hello``类
+举个实例的例子来说。首先我们有一个普通的``Hello``类
 
 ```java
 public class Hello {
@@ -55,7 +55,7 @@ hello
 事务结束 ...
 ```
 
-很明显，AOP已经生效了，那么究竟AspectJ是如何在没有修改Hello类的情况下为Hello类增加新功能的呢？
+显然，AOP已经生效了，那么究竟AspectJ是如何在没有修改Hello类的情况下为Hello类增加新功能的呢？
 
 查看一下编译后的``Hello.class``
 
@@ -74,8 +74,8 @@ public class Hello {
     }
 }
 ```
-
-很明显，这个类比原来的``Hello.java``多了一些代码，这就是AspectJ的静态代理，它会在编译阶段直接修改Java编译后的字节码，这样运行的时候就是增加了Aspect的代码。
+可以看到，这个类比原来的``Hello.java``多了一些代码，这就是AspectJ的静态代理，它会在编译阶段将Aspect织入Java字节码中，
+运行的时候就是经过增强之后的AOP对象。
 
 ```java
 public void ajc$around$com_listenzhangbin_aop_TxAspect$1$f54fe983(AroundClosure ajc$aroundClosure) {
@@ -91,11 +91,11 @@ public void ajc$around$com_listenzhangbin_aop_TxAspect$1$f54fe983(AroundClosure 
 
 与AspectJ的静态代理不同，Spring AOP使用的动态代理，所谓的动态代理就是说AOP框架不会去修改字节码，而是在内存中临时为方法生成一个AOP对象，这个AOP对象包含了目标对象的全部方法，并且在特定的切点做了增强处理，并回调原对象的方法。
 
-Spring AOP中的动态代理主要有两种方式，JDK动态代理和CGLIB动态代理。JDK动态代理通过反射来接收被代理的类，JDK动态代理要求被代理的类必须实现一个接口。JDK动态代理的核心是``InvocationHandler``接口和``Proxy``类。
+Spring AOP中的动态代理主要有两种方式，JDK动态代理和CGLIB动态代理。JDK动态代理通过反射来接收被代理的类，并且要求被代理的类必须实现一个接口。JDK动态代理的核心是``InvocationHandler``接口和``Proxy``类。
 
 如果目标类没有实现接口，那么Spring AOP会选择使用CGLIB来动态代理目标类。CGLIB（Code Generation Library），是一个代码生成的类库，可以在运行时动态的生成某个类的子类，注意，CGLIB是通过继承的方式做的动态代理，因此如果某个类被标记为``final``，那么它是无法使用CGLIB做动态代理的。
 
-为了验证以上的说法，可以做一个简单的测试，首先测试实现接口的情况。
+为了验证以上的说法，可以做一个简单的测试。首先测试实现接口的情况。
 
 定义一个接口
 
@@ -235,7 +235,10 @@ class com.listenzhangbin.aop.Chinese$$EnhancerBySpringCGLIB$$56b89168
 
 AspectJ在编译时就增强了目标对象，Spring AOP的动态代理则是在每次运行时动态的增强，生成AOP代理对象，区别在于生成AOP代理对象的时机不同，相对来说AspectJ的静态代理方式具有更好的性能，但是AspectJ需要特定的编译器进行处理，而Spring AOP则无需特定的编译器处理。
 
-参考：
+### 参考：
+
 + [《Spring AOP 实现原理与 CGLIB 应用》](http://www.ibm.com/developerworks/cn/java/j-lo-springaopcglib/)
+
 + [《Spring 容器AOP的实现原理——动态代理》](http://wiki.jikexueyuan.com/project/ssh-noob-learning/dynamic-proxy.html)
+
 + [《AOP的底层实现-CGLIB动态代理和JDK动态代理》](http://blog.csdn.net/dreamrealised/article/details/12885739)
