@@ -234,3 +234,8 @@ class com.listenzhangbin.aop.Chinese$$EnhancerBySpringCGLIB$$56b89168
 ## 小结
 
 AspectJ在编译时就增强了目标对象，Spring AOP的动态代理则是在每次运行时动态的增强，生成AOP代理对象，区别在于生成AOP代理对象的时机不同，相对来说AspectJ的静态代理方式具有更好的性能，但是AspectJ需要特定的编译器进行处理，而Spring AOP则无需特定的编译器处理。
+
+参考：
++ [《Spring AOP 实现原理与 CGLIB 应用》](http://www.ibm.com/developerworks/cn/java/j-lo-springaopcglib/)
++ [《Spring 容器AOP的实现原理——动态代理》](http://wiki.jikexueyuan.com/project/ssh-noob-learning/dynamic-proxy.html)
++ [《AOP的底层实现-CGLIB动态代理和JDK动态代理》](http://blog.csdn.net/dreamrealised/article/details/12885739)
