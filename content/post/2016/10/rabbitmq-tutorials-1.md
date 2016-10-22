@@ -113,16 +113,16 @@ public class Recv {
 }
 ```
 
-可以发现一开始的连接部分的代码是相同的，在接收的时候我们也要声明一个queue，注意整理queue的名称和之前发送消息声明的queue的名称必须是相同的，
+可以发现一开始的连接部分的代码是相同的，在接收的时候我们也要声明一个queue，注意这里queue的名称和之前发送消息声明的queue的名称必须是相同的，
 否则就收不到消息了。
 
-``DefaultConsumer``类实现了``Consumer``接口，由于发送消息是异步的，因此在这里我们提供了一个callback来缓冲消息，
+``DefaultConsumer``类实现了``Consumer``接口，由于发送消息是异步的，因此在这里提供了一个callback来缓冲消息，
 直到我们准备使用这些消息，最后分别运行``Send.java``和``Recv.java``，就能看到``Hello World!``消息了。
 
 ## Work Queues
 
-在第一部分的Hello World中我们通过一个命名的queue来传递消息，在这一部分，我们会创建``Work Queue``来将耗时的任务分发至多个worker。
-假设一个消息就是一个耗时的任务，比如文件I/O等等，我们可以通过几个worker来完成这些工作。
+在第一部分的Hello World中通过一个命名的queue来传递消息，在这一部分，我们会创建``Work Queue``来将耗时的任务分发至多个worker。
+假设一个消息就是一个耗时的任务，比如文件I/O等等，那么可以通过几个worker来共同完成这些工作。
 
 ![RabbitMQ](http://www.rabbitmq.com/img/tutorials/python-two.png)
 
@@ -227,10 +227,10 @@ private static void doWork(String task) throws InterruptedException {
 
 处理一个任务需要耗费几秒钟的时间。你也许想知道如果一个consumer在处理一个任务的时候只处理了一部分就挂了会出现什么情况。
 在我们现在的代码下，一旦RabbitMQ将一个消息传递到consumer，它马上会从内存中删除这条消息，
-也就是说如果杀掉了一个正在处理任务的worker，那么将会失去所有的这个worker正在处理的所有消息。
-我也也会失去发送给这个worker但是还未处理的消息。
+也就是说如果杀掉了一个正在处理任务的worker，那么将会失去所有的这个worker正在处理的所有消息，
+同样也会失去发送给这个worker但是还未处理的消息。
 
-一般情况下，我们不希望丢失消息，如果某个worker挂了，我们希望任务能发送给另一个worker来处理。
+一般情况下，我们不希望丢失消息，如果某个worker挂了，能将消息发送给另一个worker来处理。
 为了确保消息不会丢失，RabbitMQ支持消息接收(message acknowledgments)。
 当consumer确认收到某个消息，并且已经处理完成，RabbitMQ可以删除它时，consumer会向RabbitMQ发送一个``ack(nowledgement)``。
 
@@ -264,16 +264,16 @@ boolean autoAck = false;
 channel.basicConsume(TASK_QUEUE_NAME, autoAck, consumer);
 ```
 
-s使用以上代码能够保证即使在一个worker处使消息的时候用CTRL+C来杀掉这个worker，也不会丢失消息。
+使用以上代码能够保证即使在一个worker处使消息的时候用CTRL+C来杀掉这个worker，也不会丢失消息。
 在这个worker挂掉之后所有未接收(ack)的消息将被重新发送。
 
 ### 消息持久化
 
 我们学习了如何在worker挂掉的情况下不丢消息，但是在RabbitMQ server停止之后消息还是会丢失。
 如果不进行任何配置，在RabbitMQ退出或崩溃的时候，将会失去所有的queue和消息。
-要保证在这种情况小消息不丢失需要做两件事情：我们需要同时标志queue和message是持久化的。
+要保证在这种情况下消息不丢失需要做两件事情：需要同时标志queue和message是持久化的。
 
-首先，我们需要确保RabbitMQ不会丢失queue
+首先，需要确保RabbitMQ不会丢失queue
 
 ```java
 boolean durable = true;
@@ -282,7 +282,7 @@ channel.queueDeclare("task_queue", durable, false, false, null);
 
 我们重新声明一个queue(不能修改已经声明为不持久化的queue为持久化)，名字为``task_queue``，
 第二个布尔参数表示是否持久化的意思，这里设置为``true``，
-包括consumer和producer声明queue的时候都需要声明durable为true。现在，即使重启RabbitMQ，``task_queue``queue也不会丢失了。
+包括consumer和producer声明queue的时候都需要声明durable为true。现在，即使重启RabbitMQ，``task_queue``这个queue也不会丢失了。
 
 接下来我们将消息做持久化配置处理，通过设置``MessageProperties``(实现了BasicProperties)中的``PERSISTENT_TEXT_PLAIN``属性。
 
@@ -295,7 +295,7 @@ channel.basicPublish("", "task_queue",
 ### 公平分发(Fair dispatch)
 
 在某种场景下有两个worker，当所有奇数的消息处理起来都比较耗时，而偶数的消息处理起来都比较快，
-这就会发生一个worker总是处于busy状态，而另一个worker则总是处理空闲状态，RabbitMQ并不知道这个情况，
+这就会发生一个worker总是处于busy状态，而另一个worker则总是处于空闲状态，RabbitMQ并不知道这个情况，
 仍然只是正常的发送消息。
 
 出现这种情况的原因在于当消息在queue中的时候RabbitMQ只是发送这些消息而已，它不会去关注某个consumer未ack的消息的数量，
@@ -390,3 +390,5 @@ public class Worker {
   }
 }
 ```
+
+可以运行上面两个类来验证这一小节的所有内容。
