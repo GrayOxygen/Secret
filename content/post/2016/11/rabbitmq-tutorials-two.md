@@ -14,7 +14,7 @@ topics = ["RabbitMQ"]
 
 ## 发布/订阅(Publish/Subscribe)
 
-为了说明这种模式，我们将创建一个简单的log系统，它将会由两部分组成——第一部分负责发送log消息，第二部分负责接收并且将消息打印出来。
+为了说明这种模式，我们将创建一个简单的log系统，它由两部分组成——第一部分负责发送log消息，第二部分负责接收并且将消息打印出来。
 在我们的log系统中每个运行着的接收程序都会接收到消息，在这种方式下我们可以有一个consumer负责将log持久化到磁盘，
 同时由另一个consumer来将log打印到控制台。本质上，发送log消息是对所有消息接收者的广播。
 
@@ -34,7 +34,7 @@ RabbitMQ的消息模型的核心思想是producer永远不会直接发送任何�
 
 ![RabbitMQ Exchange](https://www.rabbitmq.com/img/tutorials/exchanges.png)
 
-RabbitMQ中的exchange类型有这么几种：``direct``，``topic`，``headers``以及``fanout``。这一小节将会主要介绍最后一种类型——``fanout`。
+RabbitMQ中的exchange类型有这么几种：``direct``，``topic``，``headers``以及``fanout``。这一小节将会主要介绍最后一种类型——``fanout``。
 使用RabbitMQ的client来创建一个``fanout``类型的exchange，命令为``logs``：
 
 ```java
@@ -172,7 +172,7 @@ channel.queueBind(queueName, EXCHANGE_NAME, "");
 
 绑定是exchange和queue之间的一种关系，这可以简单的理解为：这个queue对这个exchange中的消息感兴趣。
 
-绑定可以使用一个额外的``routingKey``参数，为了避免和``basic_publish``参数混淆，我们称它为``binding key`。
+绑定可以使用一个额外的``routingKey``参数，为了避免和``basic_publish``参数混淆，我们称它为``binding key``。
 我们可以这样来使用key创建一个绑定:
 
 ```java
@@ -187,13 +187,13 @@ binding key的含义取决于不同的exchange类型，我们之前使用的fano
 之前使用的fanout类型的exchange，没有提供给我们类似的灵活性——它只能简单的广播所有的消息。
 
 在这里将会使用direct类型的exchange作为代替。direct类型的exchange的路由算法很简单——消息将会被传递到与它的``routing key``完全相同的
-```binding key``的queue中。
+``binding key``的queue中。
 
 还是使用一张图来说明：
 
 ![Routing](https://www.rabbitmq.com/img/tutorials/direct-exchange.png)
 
-在图中可以看到，有两个queue被绑定到了direct类型的exchange X上。第一个queue使用bing key ``orange``绑定，第二个queue使用了两个bing key，
+在图中可以看到，有两个queue被绑定到了direct类型的exchange X上。第一个queue使用bing key ``orange``绑定，第二个queue使用了两个binding key，
 分别为``black``和``green``。
 
 在这样的情况下，使用routing key为``orange``发送的消息将会被路由到queue ``Q1``中，使用routing key为``black``或者``green``的将会被路由到``Q2``中。
@@ -203,7 +203,7 @@ binding key的含义取决于不同的exchange类型，我们之前使用的fano
 
 ![Multiple bindings](https://www.rabbitmq.com/img/tutorials/direct-exchange-multiple.png)
 
-将多个queue使用相同的binding key进行绑定也是可行的。在我们的例子中可以在X和Q1中间增加一个binding key ``black`。
+将多个queue使用相同的binding key进行绑定也是可行的。在我们的例子中可以在X和Q1中间增加一个binding key ``black``。
 在这种情况下，direct类型的exchange的行为将和fanout类似，它会向所有匹配的queue进行广播，使用routing key为``black``发送的消息将会同时被``Q1``和``Q2``接收。
 
 ### 发送log
