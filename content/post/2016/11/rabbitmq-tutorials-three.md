@@ -14,7 +14,7 @@ topics = ["RabbitMQ"]
 ## Topics
 
 在log系统中可能不只是基于不同的日志级别作订阅，也可能会基于日志的来源。你也许听过Unix下名为``syslog``的工具，
-它把日志按照严重级别(info/warn/crit...)和设备(auth/cron/ker...)。
+它把日志按照严重级别(info/warn/crit...)和设备(auth/cron/ker...)进行路由。
 
 这会给我们许多的灵活性，也许我们只想监听'cron'中的'critical'级别的错误日志，以及所有'kern'中的日志。
 为了实现这种日志系统，我们需要学习一个更复杂的``topic``类型的exchange。
@@ -36,7 +36,7 @@ binding key也必须是相同的形式。topic exchange背后的逻辑类似于d
 ![topic](https://www.rabbitmq.com/img/tutorials/python-five.png)
 
 在图中，我们将要发送被描述的动物的消息。消息的routing key将由三个单词组成(通过两个点分隔)。routing key中的第一个单词将描述速度，
-第二个是颜色，第三个是物种："<speed>.<colour>.<species>"。
+第二个是颜色，第三个是物种：``"<speed>.<colour>.<species>"``。
 
 我们创建三个绑定：Q1使用binding key``"*.orange.*"``来绑定，Q2使用``"*.*.rabbit"``以及``lazy.#``绑定。
 
@@ -172,7 +172,7 @@ AMQP协议预定义了消息的14种属性。大部分的都很少使用，除�
 
 + ``deliveryMode``：标记一条消息是持久化的(使用值2)还是非持久化的(使用其它值)。在第二节中有过介绍。
 + ``contentType``：用来描述mime类型的编码。例如使用JSON的话就这样设置属性：``application/json``。
-+ ``replyTo`：一般用来命名一个回调queue。
++ ``replyTo``：一般用来命名一个回调queue。
 + ``correlationId``：用来关联RPC的请求和响应。
 
 我们需要导入新的类：
@@ -190,7 +190,7 @@ import com.rabbitmq.client.AMQP.BasicProperties;
 
 你也许会问，为什么我们应该忽略回调queue中未知的消息而不是抛出异常？这是因为服务端可能会出现竞争条件。尽管不太常见，但是也有可能RPC server在发送响应后挂了，
 并且也没有接收到客户端发送的ack。如果发生了这种情况，RPC server在重启后将会重新处理这个请求。这就是为什么在客户端我们需要优雅的处理重复的响应，
-RPC因该是幂等的。
+RPC应该是幂等的。
 
 ### Summary
 
@@ -199,7 +199,7 @@ RPC因该是幂等的。
 我们的RPC整个过程是这样的：
 
 1. 当客户端启动，它创建一个匿名的并且是exclusive的回调queue。
-2. 在一次RPC请求中，客户端发送的消息有两个属性：``replyTo`，放置的是回调queue的信息。``correlationId``，放置的是每个请求唯一的值。
+2. 在一次RPC请求中，客户端发送的消息有两个属性：``replyTo``，放置的是回调queue的信息。``correlationId``，放置的是每个请求唯一的值。
 3. 请求被发送到一个rpc_queue中。
 4. RPC服务端在queue的另一端等待请求。当请求到来时，它处理任务并将消息的结果发送回客户端，使用``replyTo``中设置的queue。
 5. 客户端在回调queue中等待响应的数据，当消息出现时，它先检查``correlationId``属性。如果匹配的话就将结果返回到应用中。
