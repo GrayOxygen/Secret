@@ -24,15 +24,15 @@ Java8是2014年发布的，至今也已经有快三年的时间了，之前虽�
 
 | 函数式接口 | 函数描述符 | 原始类型特化 |
 | ------| ------ | ----- |
-| Predicate<T> | T -> boolean | IntPredicate, LongPredicate, DoublePredicate |
-| Consumer<T> | T -> void | IntConsumer, LongConsumer, DoubleConsumer |
-| Function<T,R> | T -> R | IntFunction<R>, IntToDoubleFunction, IntToLongFunction, LongFunction<R>, LongToDoubleFunction, LongToIntFunction, DoubleFunction<R>, ToIntFunction<T>, ToDoubleFunction<T>, ToLongFunction<T> |
-| Supplier<T> | () -> T | BooleanSupplier, IntSupplier, LongSupplier, DoubleSupplier |
-| UnaryOperator<T>| T -> T | IntUnaryOperator, LongUnaryOperator, DoubleUnaryOperator |
-| BinaryOperator<T> | (T,T) -> T | IntBinaryOperator, LongBinaryOperator, DoubleBinaryOperator |
-| BiPredicate<L,R> | (L,R) -> boolean |  |
-| BiConsumer<T,U> | (T,U) -> void | ObjIntConsumer<T>, ObjLongConsumer<T>, ObjDoubleConsumer<T> |
-| BiFunction<T,U,R> | (T,U) -> R | ToIntBiFunction<T,U>, ToLongBiFunction<T,U>, ToDoubleBiFunction<T,U> |
+| ``Predicate<T>`` | T -> boolean | ``IntPredicate, LongPredicate, DoublePredicate`` |
+| ``Consumer<T>`` | T -> void | ``IntConsumer, LongConsumer, DoubleConsumer`` |
+| ``Function<T,R>`` | T -> R | ``IntFunction<R>, IntToDoubleFunction, IntToLongFunction, LongFunction<R>, LongToDoubleFunction, LongToIntFunction, DoubleFunction<R>, ToIntFunction<T>, ToDoubleFunction<T>, ToLongFunction<T>`` |
+| ``Supplier<T>`` | () -> T | ``BooleanSupplier, IntSupplier, LongSupplier, DoubleSupplier`` |
+| ``UnaryOperator<T>``| T -> T | ``IntUnaryOperator, LongUnaryOperator, DoubleUnaryOperator`` |
+| ``BinaryOperator<T>`` | (T,T) -> T | ``IntBinaryOperator, LongBinaryOperator, DoubleBinaryOperator`` |
+| ``BiPredicate<L,R>`` | (L,R) -> boolean |  |
+| ``BiConsumer<T,U>`` | (T,U) -> void | ``ObjIntConsumer<T>, ObjLongConsumer<T>, ObjDoubleConsumer<T>`` |
+| ``BiFunction<T,U,R>`` | (T,U) -> R | ``ToIntBiFunction<T,U>, ToLongBiFunction<T,U>, ToDoubleBiFunction<T,U>`` |
 
 上表中的原始类型特化指的是为了消除自动装箱和拆箱的性能开销，JDK1.8提供的针对基本类型的函数式接口。
 
@@ -134,22 +134,22 @@ numbers.stream().filter(i -> i % 2 == 0).distinct().forEach(System.out::println)
 
 | 操作 | 类型 | 返回类型 | 使用的类型/函数式接口 | 函数描述符 |
 | ------| ------ | ----- | ----- | ----- |
-| filter | 中间 | Stream<T> | Predicate<T> | T -> boolean |
-| distinct | 中间 | Stream<T> |  |  |
-| skip | 中间 | Stream<T> | long |  |
-| limit| 中间 | Stream<T> | long |  |
-| map| 中间 | Stream<R> | Function<T,R> | T -> R |
-| flatMap | 中间 | Stream<R> | Function<T, Stream<R>> | T -> Stream<R> |
-| sorted | 中间 | Stream<R> | Comparator<T> | (T,T) -> int |
-| anyMatch | 终端 | boolean | Predicate<T> | T -> boolean |
-| noneMatch | 终端 | boolean | Predicate<T> | T -> boolean |
-| allMatch  | 终端 | boolean | Predicate<T> | T -> boolean |
-| findAny | 终端 | Optional<T> |  |  |
-| findFirst | 终端 | Optional<T> |  |  |
-| forEach | 终端 | void | Consumer<T> | T -> void |
-| collect | 终端 | R | Collector<T,A,R> |  |
-| reduce | 终端 | Optional<T> | BinaryOperator<T> | (T,T) -> T |
-| count | 终端 | long |  |  |
+| filter | 中间 | ``Stream<T>`` | ``Predicate<T>`` | ``T -> boolean`` |
+| distinct | 中间 | ``Stream<T>`` |  |  |
+| skip | 中间 | ``Stream<T>`` | ``long`` |  |
+| limit| 中间 | ``Stream<T>`` | ``long`` |  |
+| map| 中间 | ``Stream<R>`` | ``Function<T,R>`` | ``T -> R`` |
+| flatMap | 中间 | ``Stream<R>`` | ``Function<T, Stream<R>>`` | ``T -> Stream<R>`` |
+| sorted | 中间 | ``Stream<R>`` | ``Comparator<T>`` | ``(T,T) -> int`` |
+| anyMatch | 终端 | ``boolean`` | ``Predicate<T>`` | ``T -> boolean`` |
+| noneMatch | 终端 | ``boolean`` | ``Predicate<T>`` | ``T -> boolean`` |
+| allMatch  | 终端 | ``boolean`` | ``Predicate<T>`` | ``T -> boolean`` |
+| findAny | 终端 | ``Optional<T>`` |  |  |
+| findFirst | 终端 | ``Optional<T>`` |  |  |
+| forEach | 终端 | ``void`` | ``Consumer<T>`` | ``T -> void`` |
+| collect | 终端 | ``R`` | ``Collector<T,A,R>`` |  |
+| reduce | 终端 | ``Optional<T>`` | ``BinaryOperator<T>`` | ``(T,T) -> T`` |
+| count | 终端 | ``long`` |  |  |
 
 与函数式接口类似，Stream也提供了原始类型特化的流，比如说``IntStream``等：
 
