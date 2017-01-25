@@ -19,12 +19,12 @@ Java8是2014年发布的，至今也已经有快三年的时间了，之前虽�
 ## 函数式接口
 
 所谓的函数式接口就是只有一个抽象方法的接口，注意这里说的是抽象方法，因为Java8中加入了默认方法的特性，但是函数式接口是不关心接口中有没有默认方法的。
-一般函数式接口可以使用``@FunctionalInterface``注解的形式来标注表示这是一个函数式接口，该注解标注与否对函数式接口没有实际的不影响，
+一般函数式接口可以使用``@FunctionalInterface``注解的形式来标注表示这是一个函数式接口，该注解标注与否对函数式接口没有实际的影响，
 不过一般还是推荐使用该注解，就像使用``@Override``注解一样。JDK1.8中提供了一些函数式接口如下：
 
 | 函数式接口 | 函数描述符 | 原始类型特化 |
 | ------| ------ | ----- |
-| ``Predicate<T>`` | ``T -> boolean`` | ``IntPredicate, LongPredicate, DoublePredicate`` |
+| Predicate<T> | T -> boolean | IntPredicate, LongPredicate, DoublePredicate |
 | ``Consumer<T>`` | ``T -> void`` | ``IntConsumer, LongConsumer, DoubleConsumer`` |
 | ``Function<T,R>``| ``T -> R`` | ``IntFunction<R>, IntToDoubleFunction, IntToLongFunction, LongFunction<R>, LongToDoubleFunction, LongToIntFunction, DoubleFunction<R>, ToIntFunction<T>, ToDoubleFunction<T>, ToLongFunction<T>`` |
 | ``Supplier<T>``| ``() -> T`` | ``BooleanSupplier, IntSupplier, LongSupplier, DoubleSupplier`` |
