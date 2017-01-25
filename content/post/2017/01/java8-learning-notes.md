@@ -25,21 +25,21 @@ Java8是2014年发布的，至今也已经有快三年的时间了，之前虽�
 | 函数式接口 | 函数描述符 | 原始类型特化 |
 | ------| ------ | ----- |
 | Predicate<T> | T -> boolean | IntPredicate, LongPredicate, DoublePredicate |
-| ``Consumer<T>`` | ``T -> void`` | ``IntConsumer, LongConsumer, DoubleConsumer`` |
-| ``Function<T,R>``| ``T -> R`` | ``IntFunction<R>, IntToDoubleFunction, IntToLongFunction, LongFunction<R>, LongToDoubleFunction, LongToIntFunction, DoubleFunction<R>, ToIntFunction<T>, ToDoubleFunction<T>, ToLongFunction<T>`` |
-| ``Supplier<T>``| ``() -> T`` | ``BooleanSupplier, IntSupplier, LongSupplier, DoubleSupplier`` |
-| ``UnaryOperator<T>``| ``T -> T`` | ``IntUnaryOperator, LongUnaryOperator, DoubleUnaryOperator`` |
-| ``BinaryOperator<T>`` | ``(T,T) -> T`` | ``IntBinaryOperator, LongBinaryOperator, DoubleBinaryOperator`` |
-| ``BiPredicate<L,R>`` | ``(L,R) -> boolean`` |  |
-| ``BiConsumer<T,U>`` | ``(T,U) -> void`` | ``ObjIntConsumer<T>, ObjLongConsumer<T>, ObjDoubleConsumer<T>`` |
-| ``BiFunction<T,U,R>`` | ``(T,U) -> R`` | ``ToIntBiFunction<T,U>, ToLongBiFunction<T,U>, ToDoubleBiFunction<T,U>`` |
+| Consumer<T> | T -> void | IntConsumer, LongConsumer, DoubleConsumer |
+| Function<T,R> | T -> R | IntFunction<R>, IntToDoubleFunction, IntToLongFunction, LongFunction<R>, LongToDoubleFunction, LongToIntFunction, DoubleFunction<R>, ToIntFunction<T>, ToDoubleFunction<T>, ToLongFunction<T> |
+| Supplier<T> | () -> T | BooleanSupplier, IntSupplier, LongSupplier, DoubleSupplier |
+| UnaryOperator<T>| T -> T | IntUnaryOperator, LongUnaryOperator, DoubleUnaryOperator |
+| BinaryOperator<T> | (T,T) -> T | IntBinaryOperator, LongBinaryOperator, DoubleBinaryOperator |
+| BiPredicate<L,R> | (L,R) -> boolean |  |
+| BiConsumer<T,U> | (T,U) -> void | ObjIntConsumer<T>, ObjLongConsumer<T>, ObjDoubleConsumer<T> |
+| BiFunction<T,U,R> | (T,U) -> R | ToIntBiFunction<T,U>, ToLongBiFunction<T,U>, ToDoubleBiFunction<T,U> |
 
 上表中的原始类型特化指的是为了消除自动装箱和拆箱的性能开销，JDK1.8提供的针对基本类型的函数式接口。
 
 ## Lambda表达式和方法引用
 
 有了函数式接口之后，就可以使用Lambda表达式和方法引用了。其实函数式接口的表中的函数描述符就是Lambda表达式，在函数式接口中Lambda表达式相当于匿名内部类的效果。
-举个简单的例：
+举个简单的例子：
 
 ```java
 public class TestLambda {
@@ -63,7 +63,7 @@ public class TestLambda {
 }
 ```
 
-可以看到，相比于使用匿名内部类的方式，Lambda表达式可以使用更少的代码但是有更清晰的表述。但是Lambda表达式也不是完全等价于匿名内部类的，
+可以看到，相比于使用匿名内部类的方式，Lambda表达式可以使用更少的代码但是有更清晰的表述。注意，Lambda表达式也不是完全等价于匿名内部类的，
 两者的不同点在于``this``的指向和本地变量的屏蔽上。
 
 Lambda表达式还可以复合，把几个Lambda表达式串起来使用：
@@ -118,7 +118,7 @@ SomeClass s1 = c1.apply(100);
 
 Stream可以分成串行流和并行流，并行流是基于Java7中提供的``ForkJoinPool``来进行任务的调度，达到并行的处理的目的。
 集合是我们平时在进行Java编程时非常常用的API，使用Stream可以帮助更好的来操作集合。Stream提供了非常丰富的操作，包括筛选、切片、映射、查找、匹配、归约等等，
-这些操作又可以分为中间操作和终端操作，中间操作会返回一个流，因为我们可以使用多个中间操作来作链式的调用，当使用了终端操作之后，那么这个流就被认为是被消费了，
+这些操作又可以分为中间操作和终端操作，中间操作会返回一个流，因此我们可以使用多个中间操作来作链式的调用，当使用了终端操作之后，那么这个流就被认为是被消费了，
 每个流只能有一个终端操作。
 
 ```java
@@ -159,15 +159,15 @@ int count = list.stream().mapToInt(list::getNumber).sum();
 ```
 
 并行流与串行流的区别就在于将stream改成parallelStream，并行流会将流的操作拆分，放到线程池中去执行，但是并不是说使用并行流的性能一定好于串行的流，
-恰恰相反，可能大多数时候使用串行流即可，因为将任务提交到线程池，执行完之后再合并，这些本身都是都不小的开销的。关于并行流其实还有非常多的细节，
-这里就不赘述了，有兴趣的同学可以在网上自行查找一些资料来学习。
+恰恰相反，可能大多数时候使用串行流会有更好的性能，这是因为将任务提交到线程池，执行完之后再合并，这些本身都是有不小的开销的。关于并行流其实还有非常多的细节，
+这里做一个抛砖引玉，有兴趣的同学可以在网上自行查找一些资料来学习。
 
 ## 默认方法
 
-默认方法出现的原因是为了对原有接口的扩展，有了默认方法之后就不怕因改动原有的接口而对已经使用这些接口的程序造成的影响。
+默认方法出现的原因是为了对原有接口的扩展，有了默认方法之后就不怕因改动原有的接口而对已经使用这些接口的程序造成的代码不兼容的影响。
 在Java8中也对一些接口增加了一些默认方法，比如``Map``接口等等。一般来说，使用默认方法的场景有两个：可选方法和行为的多继承。
 
-默认方法的使用相对来说比较简单，唯一要注意点是如何处理默认方法的冲突。关于如何处理默认方法的冲突可以参考以下三条规则：
+默认方法的使用相对来说比较简单，唯一要注意的点是如何处理默认方法的冲突。关于如何处理默认方法的冲突可以参考以下三条规则：
 
 1. 类中的方法优先级最高。类或父类中声明的方法的优先级高于任何声明为默认方法的优先级。
 2. 如果无法依据第一条规则进行判断，那么子接口的优先级更高：函数签名相同时，优先选择拥有最具体实现的默认方法的接口。即如果B继承了A，那么B就比A更具体。
@@ -196,9 +196,9 @@ if (a != null) {
 ```
 
 但是简单的情况还好，如果复杂的情况下每一个都要去检查非常麻烦，而且写出来的代码也不好看、很臃肿，但是如果不检查就很容易遇到``NullPointerException``，
-Java8中的Optional就是因此而设计的。
+Java8中的Optional就是为此而设计的。
 
-现在可以使用Optional来包装方法的返回值，这就表示方法的返回值可能为``null``，需要使用Optional提供的方法来检查，如果为null，还可以提供一个默认值。
+Optional一般使用在方法的返回值中，如果使用Optional来包装方法的返回值，这就表示方法的返回值可能为``null``，需要使用Optional提供的方法来检查，如果为null，还可以提供一个默认值。
 
 ```java
 //创建Optional对象
@@ -232,7 +232,7 @@ Optional<String> opt = Optional.ofNullable(null);
 
 在Java8之前，我们会使用JDK提供的``Future``接口来进行一些异步的操作，其实``CompletableFuture``也是实现了``Future``接口，
 并且基于``ForkJoinPool``来执行任务，因此本质上来讲，``CompletableFuture``只是对原有API的封装，
-而使用CompletableFuture与原来的Future的不同之处在于可以将两个Future组合起来，或者如果两个Future是有以来关系的，可以等第一个执行完毕后再实行第二个等。
+而使用CompletableFuture与原来的Future的不同之处在于可以将两个Future组合起来，或者如果两个Future是有依赖关系的，可以等第一个执行完毕后再实行第二个等特性。
 
 先来看看基本的使用方式：
 
@@ -271,11 +271,11 @@ public List<String> findPriceAsync(String product) {
 上面这段代码使用了``thenCompose``来组合两个CompletableFuture。``supplyAsync``方法第二个参数接受一个自定义的Executor。
 首先使用CompletableFuture执行一个任务，调用``getPrice``方法，得到一个Future，之后使用``thenApply``方法，将Future的结果应用``parse``方法，
 之后再使用执行完``parse``之后的结果作为参数再执行一个``applyCount``方法，然后收集成一个``CompletableFuture<String>``的List，
-最后再使用一个流，调用CompletableFuture的``join``方法，这是为了等待所有的异步任务执行完毕，最后获得最后的结果。
+最后再使用一个流，调用CompletableFuture的``join``方法，这是为了等待所有的异步任务执行完毕，获得最后的结果。
 
 注意，这里必须使用两个流，如果在一个流里调用``join``方法，那么由于Stream的延迟特性，所有的操作还是会串行的执行，并不是异步的。
 
-再来看一个来个Future没有依赖关系的例子：
+再来看一个两个Future之间没有依赖关系的例子：
 
 ```java
 Future<String> futurePriceInUsd = CompletableFuture.supplyAsync(() -> shop.getPrice(“price1”))
@@ -304,7 +304,7 @@ Java8中加入了``LocalDateTime, LocalDate, LocalTime, Duration, Period, Instan
 
 ```java
 //创建日期
-LocalDate date = LocalDate.of(2017,1,21); //3027-01-21
+LocalDate date = LocalDate.of(2017,1,21); //2017-01-21
 int year = date.getYear() //2017
 Month month = date.getMonth(); //JANUARY
 int day = date.getDayOfMonth(); //21
@@ -341,7 +341,7 @@ LocalDate date4 = date3.plus(6, ChronoUnit.MONTHS); //2011-09-25
 ## 小结
 
 以上只是对Java8的新特性进行了一个非常简单的介绍，由于近年来函数式编程很火，Java8也受函数式编程思想的影响，吸收了函数式编程好的地方，
-很多新特性都是按照函数式编程来设计的，关于Java8还有非常多的细节没有提到，这些需要我们自行去学习，推荐一本学习Java8非常好的书籍——《Java8实战》，
+很多新特性都是按照函数式编程来设计的。关于Java8还有非常多的细节没有提到，这些需要我们自行去学习，推荐一本学习Java8非常好的书籍——《Java8实战》，
 看完这本书对Java8的使用可以有一个比较清楚的了解。
 
 现在已经是2017年了，据说今年会推出Java9，Java9会推出什么新特性，让我们拭目以待吧。
