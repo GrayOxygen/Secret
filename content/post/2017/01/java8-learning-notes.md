@@ -134,22 +134,22 @@ numbers.stream().filter(i -> i % 2 == 0).distinct().forEach(System.out::println)
 
 | 操作 | 类型 | 返回类型 | 使用的类型/函数式接口 | 函数描述符 |
 | ------| ------ | ----- | ----- | ----- |
-| ``filter`` | 中间 | ``Stream<T>`` | ``Predicate<T>`` | ``T -> boolean`` |
-| ``distinct`` | 中间 | ``Stream<T>`` |  |  |
-| ``skip``| 中间 | ``Stream<T>`` | ``long`` |  |
-| ``limit``| 中间 | ``Stream<T>`` | ``long`` |  |
-| ``map``| 中间 | ``Stream<R>`` | ``Function<T,R>`` | ``T -> R`` |
-| ``flatMap`` | 中间 | ``Stream<R>`` | ``Function<T, Stream<R>>`` | ``T -> Stream<R>`` |
-| ``sorted`` | 中间 | ``Stream<R>`` | ``Comparator<T>`` | ``(T,T) -> int`` |
-| ``anyMatch`` | 终端 | ``boolean`` | ``Predicate<T>`` | ``T -> boolean`` |
-| ``noneMatch`` | 终端 | ``boolean`` | ``Predicate<T>`` | ``T -> boolean`` |
-| ``allMatch``  | 终端 | ``boolean`` | ``Predicate<T>`` | ``T -> boolean`` |
-| ``findAny`` | 终端 | ``Optional<T>`` |  |  |
-| ``findFirst`` | 终端 | ``Optional<T>`` |  |  |
-| ``forEach`` | 终端 | ``void`` | ``Consumer<T>`` | ``T -> void`` |
-| ``collect`` | 终端 | ``R`` | ``Collector<T,A,R>`` |  |
-| ``reduce`` | 终端 | ``Optional<T>`` | ``BinaryOperator<T>`` | ``(T,T) -> T`` |
-| ``count`` | 终端 | ``long`` |  |  |
+| filter | 中间 | Stream<T> | Predicate<T> | T -> boolean |
+| distinct | 中间 | Stream<T> |  |  |
+| skip | 中间 | Stream<T> | long |  |
+| limit| 中间 | Stream<T> | long |  |
+| map| 中间 | Stream<R> | Function<T,R> | T -> R |
+| flatMap | 中间 | Stream<R> | Function<T, Stream<R>> | T -> Stream<R> |
+| sorted | 中间 | Stream<R> | Comparator<T> | (T,T) -> int |
+| anyMatch | 终端 | boolean | Predicate<T> | T -> boolean |
+| noneMatch | 终端 | boolean | Predicate<T> | T -> boolean |
+| allMatch  | 终端 | boolean | Predicate<T> | T -> boolean |
+| findAny | 终端 | Optional<T> |  |  |
+| findFirst | 终端 | Optional<T> |  |  |
+| forEach | 终端 | void | Consumer<T> | T -> void |
+| collect | 终端 | R | Collector<T,A,R> |  |
+| reduce | 终端 | Optional<T> | BinaryOperator<T> | (T,T) -> T |
+| count | 终端 | long |  |  |
 
 与函数式接口类似，Stream也提供了原始类型特化的流，比如说``IntStream``等：
 
@@ -215,18 +215,18 @@ Optional<String> opt = Optional.ofNullable(null);
 
 | 方法 | 描述 |
 | ----- | ----- |
-| ``empty`` | 返回一个空的Optional实例 |
-| ``filter`` | 如果值存在并且满足提供的谓词，就返回包括该值的Optional对象；否则返回一个空的Optional对象 |
-| ``flatMap`` | 如果值存在，就对该值执行提供的mapping函数调用，返回一个Optional类型的值，否则就返回一个空的Optional对象 |
-| ``get`` | 如果该值存在，将该值用Optional封装返回，否则抛出一个NoSuchElementException异常 |
-| ``ifPresent`` | 如果值存在，就执行使用该值的方法调用，否则返回false |
-| ``isPresent`` | 如果值存在就返回true，否则返回false |
-| ``map`` | 如果值存在，就对该值执行提供的mapping函数调用 |
-| ``of`` | 将指定值用Optional封装之后返回，如果该值为null，抛出一个NullPointerException异常 |
-| ``ofNullable`` | 将指定值用Optional封装之后返回，如果该值为null，则返回一个空的Optional对象 |
-| ``orElse`` | 如果有值则将其返回，否则返回一个默认值 |
-| ``orElseGet`` | 如果有值则将其返回，否则返回一个由指定的Supplier接口生成的值 |
-| ``orElseThrow`` | 如果有值则将其返回，否则抛出一个由指定的Supplier接口生成的异常 |
+| empty | 返回一个空的Optional实例 |
+| filter | 如果值存在并且满足提供的谓词，就返回包括该值的Optional对象；否则返回一个空的Optional对象 |
+| flatMap | 如果值存在，就对该值执行提供的mapping函数调用，返回一个Optional类型的值，否则就返回一个空的Optional对象 |
+| get | 如果该值存在，将该值用Optional封装返回，否则抛出一个NoSuchElementException异常 |
+| ifPresent | 如果值存在，就执行使用该值的方法调用，否则返回false |
+| isPresent | 如果值存在就返回true，否则返回false |
+| map | 如果值存在，就对该值执行提供的mapping函数调用 |
+| of | 将指定值用Optional封装之后返回，如果该值为null，抛出一个NullPointerException异常 |
+| ofNullable | 将指定值用Optional封装之后返回，如果该值为null，则返回一个空的Optional对象 |
+| orElse | 如果有值则将其返回，否则返回一个默认值 |
+| orElseGet | 如果有值则将其返回，否则返回一个由指定的Supplier接口生成的值 |
+| orElseThrow | 如果有值则将其返回，否则抛出一个由指定的Supplier接口生成的异常 |
 
 ## CompletableFuture
 
