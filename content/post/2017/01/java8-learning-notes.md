@@ -12,7 +12,7 @@ Java8是2014年发布的，至今也已经有快三年的时间了，之前虽�
 由于公司已经使用了JDK1.8，所以工作中能使用Java8的机会还是很多的，因此决定来系统地学习一下Java8的新特性，这是对我最近学习Java8的一些记录，
 以备在有些细节记不太清的时候可以查询。<!--more-->
 
-![Java8](http://7xsskq.com1.z0.glb.clouddn.com/blog/Java8%E6%96%B0%E7%89%B9%E6%80%A7.png)
+![Java8](http://7xsskq.com1.z0.glb.clouddn.com/blog/Java8-features.png)
 
 先来一个概览，上图是我整理的Java8中的新特性，总的来看，大致上可以分成这么几个大块。
 
