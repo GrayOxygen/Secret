@@ -96,7 +96,7 @@ public class ImprovedList<T> implements List<T> {
 
 + 闭锁（Latch）
 
-``CountDownLatch``是一个非常有用的类。当在一些异步的场景中需要使用同步是，可以使用。比如我有两个线程A和B同时执行两个task，
+``CountDownLatch``是一个非常有用的类。当在一些异步的场景中需要使用同步时，可以使用。比如有两个线程A和B同时执行两个task，
 现在要求程序必须在A和B的任务都完成之后才能走到下一步，这时候就可以使用``CountDownLatch``。
 
 ```java
@@ -186,11 +186,11 @@ public class BoundedHashSet<T> {
 因此设置这个参数时需要特别注意，不然可能会造成所有的任务都串行的情况，比如下面这样。
 
 ```java
-//这样会串行，因为工作队列没有满，基本大小为1，且使用的是有界的工作队列，（使用SynchronousQueue不会有这么问题）
+//这样会串行，因为工作队列没有满，基本大小为1，且没有指定工作队列的容量，（使用SynchronousQueue不会有这么问题）
 //如果不设置容量，那么工作队列永远不会满，也就会一直串行执行！！
 public class ThreadPoolTest {
     
-    private static final ExecutorService executors = new ThreadPoolExecutor(1, 10, 10L, TimeUnit.SECONDS,new LinkedBlockingQueue<>(10));
+    private static final ExecutorService executors = new ThreadPoolExecutor(1, 10, 10L, TimeUnit.SECONDS,new LinkedBlockingQueue<>());
 
     public static void main(String[] args) {
         for (int i = 0;i < 10;i++) {
@@ -291,7 +291,7 @@ public void transferMoney(final Account fromAcct, final Account toAcct, final Do
 当使用条件队列时，必须先获得对象上的锁。这是因为"等待由状态构成的条件"与"维护状态一致性"这两种机制必须被紧密地绑定在一起：
 只有能对状态进行检查时，才能在某个条件上等待，并且只有能够修改状态时，才能从条件等待中释放另外一个线程。
 
-Object.wait会自动释放锁，并请求操作系统挂起当前线程，从而是其它线程能够获得这个锁并修改对象的状态。当被挂起的线程醒来时，
+Object.wait会自动释放锁，并请求操作系统挂起当前线程，从而使其它线程能够获得这个锁并修改对象的状态。当被挂起的线程醒来时，
 它将在返回之前重新获取锁。
 
 ```java
@@ -327,7 +327,7 @@ public class BoundedBuffer<V> {
 3. 在一个循环中调用``wait``。
 4. 确保使用与条件队列相关的锁来保护构成条件谓词的各个状态变量。
 5. 当调用``wait``、``notify``或``notifyAll``等方法时，一定要持有与条件队列相关的锁。
-6. 在检车条件谓词之后以及开始执行相应的操作之前，不要释放锁。
+6. 在检查条件谓词之后以及开始执行相应的操作之前，不要释放锁。
 
 ```java
 void stateDependentMethod() throws InterruptedException {
